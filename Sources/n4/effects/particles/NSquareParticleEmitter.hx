@@ -17,7 +17,7 @@ class NSquareParticleEmitter extends NTypedGroup<NParticle> {
 		add(particle);
 	}
 
-	public function velocitySpread(Radius:Float, XOffset:Float = 0, YOffset:Float = 0):FastVector2 {
+	public static function velocitySpread(Radius:Float, XOffset:Float = 0, YOffset:Float = 0):FastVector2 {
 		var theta = Math.random() * Math.PI * 2;
 		var u = Math.random() + Math.random();
 		var r = Radius * (u > 1 ? 2 - u : u);

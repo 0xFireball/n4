@@ -26,6 +26,14 @@ class NTypedGroup<T:NBasic> extends NBasic {
 		}
 		return -1;
 	}
+	
+	public function forEachActive(action:T->Void) {
+		for (m in members) {
+			if (m != null && m.exists) {
+				action(m);
+			}
+		}
+	}
 
 	public function add(Object:T):T {
 		// attempt to recycle
