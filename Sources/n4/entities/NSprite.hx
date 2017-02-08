@@ -22,6 +22,8 @@ class NSprite extends NEntity {
 
 	public function makeGraphic(Width:Int, Height:Int, ?GraphicColor:Color):NSprite {
 		GraphicColor = (GraphicColor == null) ? Color.White : GraphicColor;
+		width = Width;
+		height = Height;
 		graphic = Image.createRenderTarget(Width, Height);
 		graphic.g2.begin();
 		graphic.g2.color = GraphicColor;
