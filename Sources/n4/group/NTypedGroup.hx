@@ -2,7 +2,7 @@ package n4.group;
 
 import kha.Framebuffer;
 
-class NTypedGroup<T:NEntity> extends NEntity {
+class NTypedGroup<T:NBasic> extends NBasic {
 	/**
 	 * Array of all the members of this group.
 	 */

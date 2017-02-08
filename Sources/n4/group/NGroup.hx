@@ -1,3 +1,3 @@
 package n4.group;
 
-typedef NGroup = NTypedGroup<NEntity>
+typedef NGroup = NTypedGroup<NBasic>
