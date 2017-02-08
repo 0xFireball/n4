@@ -11,13 +11,16 @@ class NTypedGroup<T:NBasic> extends NBasic {
 
 	public var pool(default, null):ItemPool<T>;
 
-	public var memberCount(default, null):Int;
+	public var memberCount(default, null):Int = 0;
+
+	public var maxSize(default, null):Int;
 
 	private var cycles:Int = 0;
 
-	public function new() {
+	public function new(MaxSize:Int = 1000) {
 		super();
 
+		maxSize = MaxSize;
 		members = [];
 		pool = new ItemPool<T>();
 	}
@@ -44,6 +47,10 @@ class NTypedGroup<T:NBasic> extends NBasic {
 	public function add(Object:T):T {
 		// attempt to recycle
 		var index = getFirstNull();
+		if (memberCount >= maxSize) { // If max size exceeded, recycle
+			index = 0;
+			--memberCount; // pop old member
+		}
 		if (index >= 0) {
 			// recycle
 			members[index] = Object;
