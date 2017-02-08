@@ -10,8 +10,8 @@ import n4.input.keyboard.NKeyboard;
 
 class NGame {
 
-	private static var _frameWidth:Int;
-	private static var _frameHeight:Int;
+	public static var width:Int;
+	public static var height:Int;
 	private static var _backbuffer:Image;
 
 	private static var _initialState:Class<NState>;
@@ -23,8 +23,8 @@ class NGame {
 	public static var keys:NKeyboard;
 
 	public static function init(Title:String = "n4", Width:Int = 800, Height:Int = 600, ?InitialState:Class<NState>, Framerate:Int = 60) {
-		_frameWidth = Width;
-		_frameHeight = Height;
+		width = Width;
+		height = Height;
 		_targetFramerate = Framerate;
 		_initialState = (InitialState == null) ? NState : InitialState;
 		System.init({title: Title, width: Width, height: Height}, function () {
@@ -54,7 +54,7 @@ class NGame {
 
 	private static function onInitialized() {
 		// create a drawing buffer
-    	_backbuffer = Image.createRenderTarget(_frameWidth, _frameHeight);
+    	_backbuffer = Image.createRenderTarget(width, height);
 		// set up
 		_clock = new NClock();
 		keys = new NKeyboard();
