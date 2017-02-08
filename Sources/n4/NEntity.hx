@@ -62,11 +62,39 @@ class NEntity extends NBasic {
 	}
 
 	private function init() {
-
+		velocity = new FastVector2(0, 0);
+		maxVelocity = new FastVector2(10000, 10000);
+		acceleration = new FastVector2(0, 0);
+		drag = new FastVector2(0, 0);
 	}
 
 	override public function update(dt:Float):Void {
 		super.update(dt);
+
+		// basic movement updates
+		
+		if (acceleration.length > 0) {
+			// accelerate
+			velocity.x += acceleration.x * dt;
+			velocity.y += acceleration.y * dt;
+			if (velocity.x > maxVelocity.x) velocity.x = maxVelocity.x;
+			if (velocity.y > maxVelocity.y) velocity.y = maxVelocity.y;
+		} else if (drag.length > 0) {
+			// apply drag
+			if (velocity.x - drag.x > 0) {
+				velocity.x -= drag.x;
+			} else {
+				velocity.x += drag.x;
+			}
+			if (velocity.y - drag.y > 0) {
+				velocity.y -= drag.y;
+			} else {
+				velocity.y += drag.y;
+			}
+		}
+
+		x += velocity.x * dt;
+		y += velocity.y * dt;
 	}
 
 	override public function render(f:Canvas):Void {
