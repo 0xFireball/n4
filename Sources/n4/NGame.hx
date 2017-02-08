@@ -7,6 +7,7 @@ import kha.Scheduler;
 import kha.System;
 
 import n4.input.keyboard.NKeyboard;
+import n4.events.NTimerManager;
 
 class NGame {
 
@@ -21,6 +22,8 @@ class NGame {
 	private static var _clock:NClock;
 
 	public static var keys:NKeyboard;
+
+	public static var timers:NTimerManager;
 
 	public static function init(Title:String = "n4", Width:Int = 800, Height:Int = 600, ?InitialState:Class<NState>, Framerate:Int = 60) {
 		width = Width;
@@ -39,6 +42,7 @@ class NGame {
 
 	private static function ge_update():Void {
 		_clock.update();
+		timers.update(_clock.dt);
 		_state.update(_clock.dt);
 	}
 
@@ -57,6 +61,7 @@ class NGame {
     	_backbuffer = Image.createRenderTarget(width, height);
 		// set up
 		_clock = new NClock();
+		timers = new NTimerManager();
 		keys = new NKeyboard();
 		// set up state
 		_state = Type.createInstance(_initialState, []);
