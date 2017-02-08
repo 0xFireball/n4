@@ -1,6 +1,6 @@
 package n4;
 
-import kha.Framebuffer;
+import kha.Canvas;
 import kha.math.FastVector2;
 import kha.FastFloat;
 
@@ -69,7 +69,7 @@ class NEntity extends NBasic {
 		super.update(dt);
 	}
 
-	override public function render(f:Framebuffer):Void {
+	override public function render(f:Canvas):Void {
 		super.render(f);
 	}
 

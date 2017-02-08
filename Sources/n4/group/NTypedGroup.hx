@@ -1,6 +1,6 @@
 package n4.group;
 
-import kha.Framebuffer;
+import kha.Canvas;
 
 class NTypedGroup<T:NBasic> extends NBasic {
 	/**
@@ -27,7 +27,7 @@ class NTypedGroup<T:NBasic> extends NBasic {
 		}
 	}
 
-	override public function render(f:Framebuffer) {
+	override public function render(f:Canvas) {
 		for (member in members) {
 			if (member != null) {
 				member.render(f);
