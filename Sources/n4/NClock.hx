@@ -11,13 +11,13 @@ class NClock {
   }
 
   public function update() {
-    var now = Scheduler.time();
+    var now = Scheduler.realTime();
     dt = now - last;
     last = now;
   }
 
   public function reset() {
-    last = Scheduler.time();
+    last = Scheduler.realTime();
     dt = 0;
   }
 }

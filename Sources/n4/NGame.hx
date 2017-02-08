@@ -42,8 +42,9 @@ class NGame {
 
 	private static function ge_update():Void {
 		_clock.update();
-		timers.update(_clock.dt);
-		_state.update(_clock.dt);
+		var gdt = _clock.dt;
+		timers.update(gdt);
+		_state.update(gdt);
 	}
 
 	private static function ge_render(framebuffer: Framebuffer): Void {

@@ -9,8 +9,8 @@ class NSquareParticleEmitter extends NTypedGroup<NParticle> {
 		super();
 	}
 
-	public function emit(X:Float, Y:Float, Size:Int, Velocity:FastVector2, PColor:Color) {
-		var particle = new NParticle(X, Y, PColor);
+	public function emit(X:Float, Y:Float, Size:Int, Velocity:FastVector2, PColor:Color, Life:Float = 0) {
+		var particle = new NParticle(X, Y, PColor, Life);
 		particle.makeGraphic(Size, Size, PColor);
 		particle.velocity.x = Velocity.x;
 		particle.velocity.y = Velocity.y;
