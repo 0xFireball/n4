@@ -8,6 +8,7 @@ import n4.assets.NGraphic;
 class NSprite extends NEntity {
 
 	public var graphic(default, set):NGraphic;
+	public var color(default, default):Color = Color.White;
 
 	public function new(?X:Float = 0, ?Y:Float = 0, ?Graphic:NGraphic) {
 		super(X, Y);
@@ -15,6 +16,7 @@ class NSprite extends NEntity {
 
 	override public function render(f:Canvas) {
 		var ctx = f.g2;
+		ctx.color = color;
 		ctx.drawImage(graphic, x, y);
 	}
 

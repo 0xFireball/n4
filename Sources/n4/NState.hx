@@ -18,7 +18,6 @@ class NState extends NGroup {
 	}
 
 	public override function render(f:Canvas) {
-		f.g2.clear(bgColor);
 		super.render(f);
 	}
 

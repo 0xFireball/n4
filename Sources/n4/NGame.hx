@@ -47,7 +47,7 @@ class NGame {
 	}
 
 	private static function ge_render(framebuffer: Framebuffer): Void {
-		_backbuffer.g2.begin();
+		_backbuffer.g2.begin(_state.bgColor);
 		_state.render(_backbuffer);
 		_backbuffer.g2.end();
 		framebuffer.g2.begin();
