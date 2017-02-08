@@ -10,7 +10,7 @@ class NGameFrame {
 	private static var _state:NState = new NState();
 	private static var _targetFramerate:Int;
 
-	public static function init(?Title:String = "n4", ?Width:Int = 800, ?Height:Int = 600, ?InitialState:Class<NState>, ?Framerate:Int = 60) {
+	public static function init(Title:String = "n4", Width:Int = 800, Height:Int = 600, ?InitialState:Class<NState>, Framerate:Int = 60) {
 		_targetFramerate = Framerate;
 		_initialState = (InitialState == null) ? NState : InitialState;
 		System.init({title: Title, width: Width, height: Height}, function () {

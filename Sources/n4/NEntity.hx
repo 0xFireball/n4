@@ -2,6 +2,7 @@ package n4;
 
 import kha.Framebuffer;
 import kha.math.FastVector2;
+import kha.FastFloat;
 
 class NEntity extends NBasic {
 
@@ -70,5 +71,29 @@ class NEntity extends NBasic {
 
 	override public function render(f:Framebuffer):Void {
 		super.render(f);
+	}
+
+	private function set_x(Value:Float):Float {
+		return x = Value;
+	}
+
+	private function set_y(Value:Float):Float {
+		return y = Value;
+	}
+
+	private function get_width():Float {
+		return width;
+	}
+
+	private function set_width(Value:Float):Float {
+		return width = Value;
+	}
+	
+	private function get_height():Float {
+		return height;
+	}
+
+	private function set_height(Value:Float):Float {
+		return height = Value;
 	}
 }
