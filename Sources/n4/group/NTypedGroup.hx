@@ -8,22 +8,70 @@ class NTypedGroup<T:NBasic> extends NBasic {
 	 */
 	public var members(default, null):Array<T>;
 
+	public var memberCount(default, null):Int;
+
 	public function new() {
 		super();
 
 		members = [];
 	}
 
+	private function getFirstNull():Int {
+		var i:Int = 0;
+		while (i < members.length) {
+			if (members[i] == null) {
+				return i;
+			}
+			i++;
+		}
+		return -1;
+	}
+
 	public function add(Object:T):T {
+		// attempt to recycle
+		var index = getFirstNull();
+		if (index >= 0) {
+			// recycle
+			members[index] = Object;
+			++memberCount;
+			return Object;
+		}
 		members.push(Object);
+		++memberCount;
 		return Object;
 	}
 
 	override public function update(dt:Float) {
-		for (member in members) {
+		var i:Int = 0;
+		while (i < members.length) {
+			var member = members[i];
 			if (member != null) {
-				member.update(dt);
+				if (member.exists) {
+					member.update(dt);
+				} else {
+					members[i] = null;
+					--memberCount;
+				}
 			}
+			++i;
+		}
+	}
+
+	override public function destroy():Void {
+		super.destroy();
+		if (members != null) {
+			var i:Int = 0;
+			var member = null;
+			
+			while (i < memberCount)
+			{
+				member = members[i++];
+				
+				if (member != null)
+					member.destroy();
+			}
+			
+			members = null;
 		}
 	}
 
