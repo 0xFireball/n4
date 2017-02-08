@@ -3,6 +3,7 @@ package n4;
 import kha.Canvas;
 import kha.math.FastVector2;
 import kha.FastFloat;
+import n4.math.NVelocityCalc;
 
 class NEntity extends NBasic {
 
@@ -26,6 +27,12 @@ class NEntity extends NBasic {
 	public var height(get, set):FastFloat;
 
 	/**
+	 * Set the angle (in degrees) of a sprite to rotate it. WARNING: rotating sprites
+	 * decreases their rendering performance by a factor of ~10x when using blitting!
+	 */
+	public var angle(default, set):Float = 0;
+
+	/**
 	 * The basic speed of this object (in pixels per second).
 	 */
 	public var velocity(default, null):FastVector2;
@@ -44,6 +51,23 @@ class NEntity extends NBasic {
 	 * to cap the speed automatically (very useful!).
 	 */
 	public var maxVelocity(default, null):FastVector2;
+
+	/**
+	 * This is how fast you want this sprite to spin (in degrees per second).
+	 */
+	public var angularVelocity:Float = 0;
+	/**
+	 * How fast the spin speed should change (in degrees per second).
+	 */
+	public var angularAcceleration:Float = 0;
+	/**
+	 * Like drag but for spinning.
+	 */
+	public var angularDrag:Float = 0;
+	/**
+	 * Use in conjunction with angularAcceleration for fluid spin speed control.
+	 */
+	public var maxAngular:Float = 10000;
 
 	/**
 	 * Utility for storing health
@@ -71,30 +95,27 @@ class NEntity extends NBasic {
 	override public function update(dt:Float):Void {
 		super.update(dt);
 
-		// basic movement updates
-		
-		if (acceleration.length > 0) {
-			// accelerate
-			velocity.x += acceleration.x * dt;
-			velocity.y += acceleration.y * dt;
-			if (velocity.x > maxVelocity.x) velocity.x = maxVelocity.x;
-			if (velocity.y > maxVelocity.y) velocity.y = maxVelocity.y;
-		} else if (drag.length > 0) {
-			// apply drag
-			if (velocity.x - drag.x > 0) {
-				velocity.x -= drag.x;
-			} else {
-				velocity.x += drag.x;
-			}
-			if (velocity.y - drag.y > 0) {
-				velocity.y -= drag.y;
-			} else {
-				velocity.y += drag.y;
-			}
-		}
+		// motion updates
+		updateMotion(dt);
+	}
 
-		x += velocity.x * dt;
-		y += velocity.y * dt;
+	private function updateMotion(dt:Float) {
+		var velocityDelta = 0.5 * (NVelocityCalc.computeVelocity(angularVelocity, angularAcceleration, angularDrag, maxAngular, dt) - angularVelocity);
+		angularVelocity += velocityDelta; 
+		angle += angularVelocity * dt;
+		angularVelocity += velocityDelta;
+		
+		velocityDelta = 0.5 * (NVelocityCalc.computeVelocity(velocity.x, acceleration.x, drag.x, maxVelocity.x, dt) - velocity.x);
+		velocity.x += velocityDelta;
+		var delta = velocity.x * dt;
+		velocity.x += velocityDelta;
+		x += delta;
+		
+		velocityDelta = 0.5 * (NVelocityCalc.computeVelocity(velocity.y, acceleration.y, drag.y, maxVelocity.y, dt) - velocity.y);
+		velocity.y += velocityDelta;
+		delta = velocity.y * dt;
+		velocity.y += velocityDelta;
+		y += delta;
 	}
 
 	override public function render(f:Canvas):Void {
@@ -107,6 +128,11 @@ class NEntity extends NBasic {
 
 	private function set_y(Value:Float):Float {
 		return y = Value;
+	}
+
+	private function set_angle(Value:Float):Float
+	{
+		return angle = Value;
 	}
 
 	private function get_width():Float {
