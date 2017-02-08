@@ -6,7 +6,9 @@ class NBasic {
 
 	public var exists(default, default):Bool = true;
 
-	public function new() {}
+	public function new() {
+		initialize();
+	}
 
 	public function update(dt:Float) {}
 
@@ -14,5 +16,9 @@ class NBasic {
 
 	public function destroy() {
 		exists = false;
+	}
+
+	public function initialize() {
+		exists = true;
 	}
 }

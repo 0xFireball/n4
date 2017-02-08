@@ -5,16 +5,15 @@ import n4.entities.NSprite;
 
 class NParticle extends NSprite {
 
-	public var life(default, null):Float;
-	public var age(default, null):Float = 0;
-
-	private var _col:Color;
+	public var life:Float;
+	public var age:Float = 0;
+	public var particleColor:Color;
 
 	public function new(X:Float = 0, Y:Float = 0, PColor:Color, Life:Float = 0) {
 		super(X, Y);
 
 		life = Life;
-		_col = PColor;
+		particleColor = PColor;
 	}
 
 	public override function update(dt:Float) {
@@ -24,7 +23,7 @@ class NParticle extends NSprite {
 			destroy();
 		} else {
 			var alpha = 1 - (age / life);
-			color = Color.fromFloats(_col.R, _col.G, _col.B, alpha);
+			color = Color.fromFloats(particleColor.R, particleColor.G, particleColor.B, alpha);
 		}
 
 		super.update(dt);

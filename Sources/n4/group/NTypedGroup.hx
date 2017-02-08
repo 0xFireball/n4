@@ -1,6 +1,7 @@
 package n4.group;
 
 import kha.Canvas;
+import n4.pooling.ItemPool;
 
 class NTypedGroup<T:NBasic> extends NBasic {
 	/**
@@ -8,12 +9,17 @@ class NTypedGroup<T:NBasic> extends NBasic {
 	 */
 	public var members(default, null):Array<T>;
 
+	public var pool(default, null):ItemPool<T>;
+
 	public var memberCount(default, null):Int;
+
+	private var cycles:Int = 0;
 
 	public function new() {
 		super();
 
 		members = [];
+		pool = new ItemPool<T>();
 	}
 
 	private function getFirstNull():Int {
@@ -50,6 +56,7 @@ class NTypedGroup<T:NBasic> extends NBasic {
 	}
 
 	override public function update(dt:Float) {
+		++cycles;
 		var i:Int = 0;
 		while (i < members.length) {
 			var member = members[i];
@@ -57,12 +64,26 @@ class NTypedGroup<T:NBasic> extends NBasic {
 				if (member.exists) {
 					member.update(dt);
 				} else {
+					pool.putWeak(member);
 					members[i] = null;
 					--memberCount;
 				}
 			}
+			// if (cycles % 200 == 0) { // null cleanup
+			// 	if (member == null) {
+			// 		members.splice(i, 1);
+			// 	} else {
+			// 		++i;
+			// 	}
+			// } else {
+			// 	++i;
+			// }
 			++i;
 		}
+		// if (cycles % 200 == 0) { // null cleanup
+		// 	// clean up pool
+		// 	pool.empty();
+		// }
 	}
 
 	override public function destroy():Void {
