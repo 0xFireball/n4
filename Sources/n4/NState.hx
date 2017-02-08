@@ -1,7 +1,8 @@
 package n4;
 
-import n4.group.NGroup;
+import kha.Canvas;
 import kha.Color;
+import n4.group.NGroup;
 
 class NState extends NGroup {
 	public var bgColor(default, set):Color = Color.Black;
@@ -14,6 +15,11 @@ class NState extends NGroup {
 	 * Should be overrided to be customized
 	 */
 	public function create():Void {
+	}
+
+	public override function render(f:Canvas) {
+		f.g2.clear(bgColor);
+		super.render(f);
 	}
 
 	private function set_bgColor(Value:Color):Color {

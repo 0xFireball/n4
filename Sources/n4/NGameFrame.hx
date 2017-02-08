@@ -30,6 +30,7 @@ class NGameFrame {
 
 	public static function switchState(state:NState) {
 		_state = state;
+		_state.create();
 	}
 
 	private static function ge_update():Void {
@@ -38,7 +39,9 @@ class NGameFrame {
 	}
 
 	private static function ge_render(framebuffer: Framebuffer): Void {
+		_backbuffer.g2.begin();
 		_state.render(_backbuffer);
+		_backbuffer.g2.end();
 		framebuffer.g2.begin();
 		// render backbuffer
 		Scaler.scale(_backbuffer, framebuffer, System.screenRotation);
@@ -52,6 +55,7 @@ class NGameFrame {
 		_clock = new NClock();
 		// set up state
 		_state = Type.createInstance(_initialState, []);
+		switchState(_state);
 		System.notifyOnRender(ge_render);
 		Scheduler.addTimeTask(ge_update, 0, 1 / _targetFramerate);
 	}

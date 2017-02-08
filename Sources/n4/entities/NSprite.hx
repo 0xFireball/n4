@@ -1,5 +1,6 @@
 package n4.entities;
 
+import kha.Canvas;
 import kha.Color;
 import kha.Image;
 import n4.assets.NGraphic;
@@ -12,9 +13,14 @@ class NSprite extends NEntity {
 		super(X, Y);
 	}
 
+	override public function render(f:Canvas) {
+		var ctx = f.g2;
+		ctx.drawImage(graphic, x, y);
+	}
+
 	public function makeGraphic(Width:Int, Height:Int, ?GraphicColor:Color):NSprite {
 		GraphicColor = (GraphicColor == null) ? Color.White : GraphicColor;
-		graphic = Image.create(Width, Height);
+		graphic = Image.createRenderTarget(Width, Height);
 		graphic.g2.begin();
 		graphic.g2.color = GraphicColor;
 		graphic.g2.fillRect(0, 0, Width, Height);
