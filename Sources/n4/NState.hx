@@ -1,5 +1,6 @@
 package n4;
 
+import n4.group.NGroup;
 import kha.Color;
 
 class NState extends NGroup {

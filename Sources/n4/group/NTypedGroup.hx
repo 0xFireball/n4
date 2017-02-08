@@ -1,4 +1,4 @@
-package n4;
+package n4.group;
 
 import kha.Framebuffer;
 
@@ -12,6 +12,11 @@ class NTypedGroup<T:NEntity> extends NEntity {
 		super();
 
 		members = [];
+	}
+
+	public function add(Object:T):T {
+		members.push(Object);
+		return Object;
 	}
 
 	override public function update(dt:Float) {
