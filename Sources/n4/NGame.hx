@@ -20,9 +20,7 @@ class NGame {
 
 	private static var _clock:NClock;
 
-	private static var _keyboard:NKeyboard;
-
-	public static var keys(default, null):NKeyboard;
+	public static var keys:NKeyboard;
 
 	public static function init(Title:String = "n4", Width:Int = 800, Height:Int = 600, ?InitialState:Class<NState>, Framerate:Int = 60) {
 		_frameWidth = Width;
@@ -59,15 +57,11 @@ class NGame {
     	_backbuffer = Image.createRenderTarget(_frameWidth, _frameHeight);
 		// set up
 		_clock = new NClock();
-		_keyboard = new NKeyboard();
+		keys = new NKeyboard();
 		// set up state
 		_state = Type.createInstance(_initialState, []);
 		switchState(_state);
 		System.notifyOnRender(ge_render);
 		Scheduler.addTimeTask(ge_update, 0, 1 / _targetFramerate);
-	}
-
-	private static function get_keys():NKeyboard {
-		return _keyboard;
 	}
 }
