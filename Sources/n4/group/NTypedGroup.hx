@@ -43,23 +43,25 @@ class NTypedGroup<T:NBasic> extends NBasic {
 	}
 
 	public function add(Object:T):T {
-		// attempt to recycle
-		var index = getFirstAvailable();
-		if (index < 0 && memberCount >= maxSize) { // If max size exceeded, recycle
-			index = freePosition; // replace at free position
-			++freePosition;
-			freePosition %= members.length;
-			--memberCount; // pop old member
-		}
-		if (index >= 0) {
+		var full:Bool = memberCount >= maxSize;
+		if (!full) {
+			members.push(Object);
+			++memberCount;
+			return Object;
+		} else {
+			// attempt to recycle
+			var index = getFirstAvailable();
+			if (index < 0) { // none available, force
+				index = freePosition; // replace at free position
+				++freePosition;
+				freePosition %= members.length;
+				--memberCount; // pop old member
+			}
 			// recycle
 			members[index] = Object;
 			++memberCount;
 			return Object;
 		}
-		members.push(Object);
-		++memberCount;
-		return Object;
 	}
 
 	override public function update(dt:Float) {
