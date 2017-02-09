@@ -20,10 +20,11 @@ class NGame {
 	public static var targetFramerate:Int;
 	public static var keys:NKeyboard;
 	public static var timers:NTimerManager;
+	public static var frameCount(default, null):Int = 0;
 	// render options
 	public static var useDoubleBuffering:Bool = true;
 
-	public static function init(Title:String = "n4", Width:Int = 800, Height:Int = 600, ?InitialState:Class<NState>, Framerate:Int = 60) {
+	public static function init(?Title:String = "n4", ?Width:Int = 800, ?Height:Int = 600, ?InitialState:Class<NState>, ?Framerate:Int = 60) {
 		width = Width;
 		height = Height;
 		targetFramerate = Framerate;
@@ -47,6 +48,7 @@ class NGame {
 	}
 
 	private static function ge_render(framebuffer: Framebuffer): Void {
+		++frameCount;
 		if (useDoubleBuffering) {
 			_backbuffer.g2.begin(true, currentState.bgColor);
 			currentState.render(_backbuffer);

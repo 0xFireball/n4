@@ -10,14 +10,18 @@ class NClock {
     reset();
   }
 
+  private inline function getTime() {
+    return Scheduler.time();
+  }
+
   public function update() {
-    var now = Scheduler.realTime();
+    var now = getTime();
     dt = now - last;
     last = now;
   }
 
   public function reset() {
-    last = Scheduler.realTime();
+    last = getTime();
     dt = 0;
   }
 }
