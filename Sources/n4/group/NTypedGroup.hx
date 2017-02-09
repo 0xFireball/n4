@@ -46,7 +46,9 @@ class NTypedGroup<T:NBasic> extends NBasic {
 		// attempt to recycle
 		var index = getFirstAvailable();
 		if (index < 0 && memberCount >= maxSize) { // If max size exceeded, recycle
-			index = 0;
+			index = freePosition; // replace at free position
+			++freePosition;
+			freePosition %= members.length;
 			--memberCount; // pop old member
 		}
 		if (index >= 0) {
