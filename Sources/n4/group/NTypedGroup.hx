@@ -26,6 +26,7 @@ class NTypedGroup<T:NBasic> extends NBasic {
 		while (i < members.length + freePosition) {
 			var h = i % members.length;
 			if (members[h] == null || !members[h].exists) {
+				if (i < members.length) ++freePosition;
 				return h;
 			}
 			i++;
@@ -68,11 +69,12 @@ class NTypedGroup<T:NBasic> extends NBasic {
 					member.update(dt);
 					if (!member.exists) { // the member died
 						--memberCount;
+						if (i < freePosition) {
+							freePosition = i;
+						}
 					}
 				} else {
-					if (i < freePosition) {
-						freePosition = i;
-					}
+					
 				}
 			}
 			++i;
