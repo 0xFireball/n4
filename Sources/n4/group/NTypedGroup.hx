@@ -47,7 +47,7 @@ class NTypedGroup<T:NBasic> extends NBasic {
 	public function add(Object:T):T {
 		// attempt to recycle
 		var index = getFirstNull();
-		if (memberCount >= maxSize) { // If max size exceeded, recycle
+		if (index < 0 && memberCount >= maxSize) { // If max size exceeded, recycle
 			index = 0;
 			--memberCount; // pop old member
 		}

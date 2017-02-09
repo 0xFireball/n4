@@ -10,25 +10,23 @@ import n4.input.keyboard.NKeyboard;
 import n4.events.NTimerManager;
 
 class NGame {
-
+	private static var _backbuffer:Image;
+	private static var _initialState:Class<NState>;
+	private static var _clock:NClock;
+	
 	public static var width:Int;
 	public static var height:Int;
-	private static var _backbuffer:Image;
-
-	private static var _initialState:Class<NState>;
-	private static var _state:NState = new NState();
-	private static var _targetFramerate:Int;
-
-	private static var _clock:NClock;
-
+	public static var currentState:NState = new NState();
+	public static var targetFramerate:Int;
 	public static var keys:NKeyboard;
-
 	public static var timers:NTimerManager;
+	// render options
+	public static var useDoubleBuffering:Bool = true;
 
 	public static function init(Title:String = "n4", Width:Int = 800, Height:Int = 600, ?InitialState:Class<NState>, Framerate:Int = 60) {
 		width = Width;
 		height = Height;
-		_targetFramerate = Framerate;
+		targetFramerate = Framerate;
 		_initialState = (InitialState == null) ? NState : InitialState;
 		System.init({title: Title, width: Width, height: Height}, function () {
 			onInitialized();
@@ -36,25 +34,31 @@ class NGame {
 	}
 
 	public static function switchState(state:NState) {
-		_state = state;
-		_state.create();
+		currentState = state;
+		currentState.create();
 	}
 
 	private static function ge_update():Void {
 		_clock.update();
 		var gdt = _clock.dt;
 		timers.update(gdt);
-		_state.update(gdt);
+		currentState.update(gdt);
 	}
 
 	private static function ge_render(framebuffer: Framebuffer): Void {
-		_backbuffer.g2.begin(_state.bgColor);
-		_state.render(_backbuffer);
-		_backbuffer.g2.end();
-		framebuffer.g2.begin();
-		// render backbuffer
-		Scaler.scale(_backbuffer, framebuffer, System.screenRotation);
-		framebuffer.g2.end();
+		if (useDoubleBuffering) {
+			_backbuffer.g2.begin(currentState.bgColor);
+			currentState.render(_backbuffer);
+			_backbuffer.g2.end();
+			framebuffer.g2.begin();
+			// render backbuffer
+			Scaler.scale(_backbuffer, framebuffer, System.screenRotation);
+			framebuffer.g2.end();
+		} else {
+			framebuffer.g2.begin(currentState.bgColor);
+			currentState.render(framebuffer);
+			framebuffer.g2.end();
+		}
 	}
 
 	private static function onInitialized() {
@@ -65,9 +69,9 @@ class NGame {
 		timers = new NTimerManager();
 		keys = new NKeyboard();
 		// set up state
-		_state = Type.createInstance(_initialState, []);
-		switchState(_state);
+		currentState = Type.createInstance(_initialState, []);
+		switchState(currentState);
 		System.notifyOnRender(ge_render);
-		Scheduler.addTimeTask(ge_update, 0, 1 / _targetFramerate);
+		Scheduler.addTimeTask(ge_update, 0, 1 / targetFramerate);
 	}
 }
