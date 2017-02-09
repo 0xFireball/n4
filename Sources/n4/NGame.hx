@@ -41,13 +41,14 @@ class NGame {
 	private static function ge_update():Void {
 		_clock.update();
 		var gdt = _clock.dt;
+		// trace("current framerate: " + 1 / gdt);
 		timers.update(gdt);
 		currentState.update(gdt);
 	}
 
 	private static function ge_render(framebuffer: Framebuffer): Void {
 		if (useDoubleBuffering) {
-			_backbuffer.g2.begin(currentState.bgColor);
+			_backbuffer.g2.begin(true, currentState.bgColor);
 			currentState.render(_backbuffer);
 			_backbuffer.g2.end();
 			framebuffer.g2.begin();
@@ -55,7 +56,7 @@ class NGame {
 			Scaler.scale(_backbuffer, framebuffer, System.screenRotation);
 			framebuffer.g2.end();
 		} else {
-			framebuffer.g2.begin(currentState.bgColor);
+			framebuffer.g2.begin(true, currentState.bgColor);
 			currentState.render(framebuffer);
 			framebuffer.g2.end();
 		}
