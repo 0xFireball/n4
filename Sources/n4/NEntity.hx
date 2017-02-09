@@ -69,10 +69,17 @@ class NEntity extends NBasic {
 	 */
 	public var maxAngular:Float = 10000;
 
+
+	// Utilties
+
 	/**
 	 * Utility for storing health
 	 */
 	public var health:Float = 1;
+
+	public var mass:Float = 1;
+
+	public var momentum(get, null):Float;
 
 	public function new(X:Float = 0, Y:Float = 0, Width:Float = 0, Height:Float = 0) {
 		super();
@@ -149,5 +156,9 @@ class NEntity extends NBasic {
 
 	private function set_height(Value:Float):Float {
 		return height = Value;
+	}
+
+	private function get_momentum():Float {
+		return mass * velocity.length;
 	}
 }

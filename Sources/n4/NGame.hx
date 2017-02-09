@@ -42,6 +42,7 @@ class NGame {
 	private static function ge_update():Void {
 		_clock.update();
 		var gdt = _clock.dt;
+		// var gdt = 1 / targetFramerate;
 		// trace("current framerate: " + 1 / gdt);
 		timers.update(gdt);
 		currentState.update(gdt);

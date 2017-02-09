@@ -75,6 +75,7 @@ class NTypedGroup<T:NBasic> extends NBasic {
 			}
 			++i;
 		}
+		super.update(dt);
 	}
 
 	override public function destroy():Void {
