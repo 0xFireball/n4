@@ -43,7 +43,7 @@ class NTypedGroup<T:NBasic> extends NBasic {
 	}
 
 	public function add(Object:T):T {
-		var full:Bool = memberCount >= maxSize;
+		var full:Bool = members.length >= maxSize;
 		if (!full) {
 			members.push(Object);
 			++memberCount;
