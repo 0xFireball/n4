@@ -11,7 +11,7 @@ class NClock {
   }
 
   private inline function getTime() {
-    return Scheduler.time();
+    return Scheduler.realTime();
   }
 
   public function update() {

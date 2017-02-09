@@ -1,7 +1,6 @@
 package n4.group;
 
 import kha.Canvas;
-import n4.pooling.ItemPool;
 
 class NTypedGroup<T:NBasic> extends NBasic {
 	/**
@@ -9,25 +8,25 @@ class NTypedGroup<T:NBasic> extends NBasic {
 	 */
 	public var members(default, null):Array<T>;
 
-	public var pool(default, null):ItemPool<T>;
-
 	public var memberCount(default, null):Int = 0;
 
 	public var maxSize(default, null):Int;
+
+	private var freePosition:Int = 0;
 
 	public function new(MaxSize:Int = 1000) {
 		super();
 
 		maxSize = MaxSize;
 		members = [];
-		pool = new ItemPool<T>();
 	}
 
-	private function getFirstNull():Int {
-		var i:Int = 0;
-		while (i < members.length) {
-			if (members[i] == null) {
-				return i;
+	private function getFirstAvailable():Int {
+		var i = freePosition;
+		while (i < members.length + freePosition) {
+			var h = i % members.length;
+			if (members[h] == null || !members[h].exists) {
+				return h;
 			}
 			i++;
 		}
@@ -44,7 +43,7 @@ class NTypedGroup<T:NBasic> extends NBasic {
 
 	public function add(Object:T):T {
 		// attempt to recycle
-		var index = getFirstNull();
+		var index = getFirstAvailable();
 		if (index < 0 && memberCount >= maxSize) { // If max size exceeded, recycle
 			index = 0;
 			--memberCount; // pop old member
@@ -67,10 +66,13 @@ class NTypedGroup<T:NBasic> extends NBasic {
 			if (member != null) {
 				if (member.exists) {
 					member.update(dt);
+					if (!member.exists) { // the member died
+						--memberCount;
+					}
 				} else {
-					pool.putWeak(member);
-					members[i] = null;
-					--memberCount;
+					if (i < freePosition) {
+						freePosition = i;
+					}
 				}
 			}
 			++i;
@@ -88,7 +90,7 @@ class NTypedGroup<T:NBasic> extends NBasic {
 			{
 				member = members[i++];
 				
-				if (member != null)
+				if (member != null && member.exists)
 					member.destroy();
 			}
 			
@@ -98,7 +100,7 @@ class NTypedGroup<T:NBasic> extends NBasic {
 
 	override public function render(f:Canvas) {
 		for (member in members) {
-			if (member != null) {
+			if (member != null && member.exists) {
 				member.render(f);
 			}
 		}

@@ -18,6 +18,7 @@ class NSprite extends NEntity {
 		var ctx = f.g2;
 		ctx.color = color;
 		ctx.drawImage(graphic, x, y);
+		super.render(f);
 	}
 
 	public function makeGraphic(Width:Int, Height:Int, ?GraphicColor:Color):NSprite {
