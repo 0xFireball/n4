@@ -3,8 +3,8 @@ package n4.input.touch;
 import kha.input.Surface;
 
 class NTouchSurface {
-	private var state(default, never):Map<String, NKeyState> = new Map<String, NKeyState>();
-	public var list(default, never):Array<NKeyState>;
+	private var state(default, never):Map<String, NTouchState> = new Map<String, NTouchState>();
+	public var list(default, never):Array<NTouchState>;
 
 	public function new() {
 		Surface.get().notify(onTouchStart, onTouchEnd, onTouchMove);

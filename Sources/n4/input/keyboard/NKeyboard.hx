@@ -5,7 +5,7 @@ import kha.Key;
 
 class NKeyboard {
 	private var state(default, never):Map<String, NKeyState> = new Map<String, NKeyState>();
-	public var list(default, never):Array<NKeyState>;
+	public var list(default, never):Array<NKeyState> = new Array<NKeyState>();
 
 	public function new() {
 		Keyboard.get().notify(onKeyDown, onKeyUp);
