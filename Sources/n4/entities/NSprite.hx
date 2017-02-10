@@ -24,10 +24,10 @@ class NSprite extends NEntity {
 
 	public function makeGraphic(Width:Int, Height:Int, ?GraphicColor:Color):NSprite {
 		var g = NGraphicPool.get(Width, Height, GraphicColor);
+		width = Width;
+		height = Height;
 		if (g == null) {
 			GraphicColor = (GraphicColor == null) ? Color.White : GraphicColor;
-			width = Width;
-			height = Height;
 			graphic = Image.createRenderTarget(Width, Height);
 			graphic.g2.begin();
 			graphic.g2.color = GraphicColor;
@@ -37,6 +37,15 @@ class NSprite extends NEntity {
 		} else {
 			graphic = g;
 		}
+		return this;
+	}
+
+	public function renderGraphic(Width:Int, Height:Int, render:NGraphic->Void):NSprite {
+		width = Width;
+		height = Height;
+		var target = Image.createRenderTarget(Width, Height);
+		render(target);
+		graphic = target;
 		return this;
 	}
 
