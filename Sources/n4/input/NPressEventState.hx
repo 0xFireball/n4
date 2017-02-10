@@ -1,6 +1,6 @@
 package n4.input;
 
-class NEventState {
+class NPressEventState {
 	public var justPressed(get, null):Bool;
 	public var pressed(get, null):Bool;
 

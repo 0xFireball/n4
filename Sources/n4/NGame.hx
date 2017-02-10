@@ -7,6 +7,7 @@ import kha.Scheduler;
 import kha.System;
 
 import n4.input.keyboard.NKeyboard;
+import n4.input.touch.NTouchSurface;
 import n4.events.NTimerManager;
 import n4.math.NRect;
 import n4.system.NQuadTree;
@@ -16,17 +17,24 @@ class NGame {
 	private static var _initialState:Class<NState>;
 	private static var _clock:NClock;
 	
+	// configuration
 	public static var width:Int;
 	public static var height:Int;
-	public static var currentState:NState = new NState();
 	public static var targetFramerate:Int;
-	public static var keys:NKeyboard;
-	public static var timers:NTimerManager;
+
+	// state variables
+	public static var currentState:NState = new NState();
 	public static var drawFrameCount(default, null):Int = 0;
 	public static var updateFrameCount(default, null):Int = 0;
+
 	// render options
 	public static var useDoubleBuffering:Bool = true;
 	public static var syncDrawUpdate:Bool = true;
+
+	// input and utilities
+	public static var keys:NKeyboard;
+	public static var touches:NTouchSurface;
+	public static var timers:NTimerManager;
 
 	/**
 	 * The dimensions of the game world, used by the quad tree for collisions and overlap checks.
