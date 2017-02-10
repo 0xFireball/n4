@@ -6,17 +6,35 @@ import n4.assets.NGraphic;
 class NGraphicPool {
 	public static var items:Map<String, NGraphic> = new Map<String, NGraphic>();
 
-	private static function hash(Width:Int, Height:Int, ItemColor:Color):String {
-		return Width + Height + ItemColor.value + "";
+	// MakeGraphic pooling
+
+	private static inline function hashM(Width:Int, Height:Int, ItemColor:Color):String {
+		return Width + Height + ItemColor.value + "M";
 	}
 
-	public static function put(Width:Int, Height:Int, ItemColor:Color, Graphic:NGraphic) {
-		var h = hash(Width, Height, ItemColor);
+	public static function putM(Width:Int, Height:Int, ItemColor:Color, Graphic:NGraphic) {
+		var h = hashM(Width, Height, ItemColor);
 		items[h] = Graphic;
 	}
 
-	public static function get(Width:Int, Height:Int, ItemColor:Color):NGraphic {
-		var h = hash(Width, Height, ItemColor);
+	public static function getM(Width:Int, Height:Int, ItemColor:Color):NGraphic {
+		var h = hashM(Width, Height, ItemColor);
+		return items[h];
+	}
+
+	// RenderGraphic pooling
+
+	private static inline function hashR(Width:Int, Height:Int, Key:String) {
+		return Width + Height + Key + "R";
+	}
+
+	public static function putR(Width:Int, Height:Int, Key:String, Graphic:NGraphic) {
+		var h = hashR(Width, Height, Key);
+		items[h] = Graphic;
+	}
+
+	public static function getR(Width:Int, Height:Int, Key:String):NGraphic {
+		var h = hashR(Width, Height, Key);
 		return items[h];
 	}
 }

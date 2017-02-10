@@ -23,7 +23,7 @@ class NSprite extends NEntity {
 	}
 
 	public function makeGraphic(Width:Int, Height:Int, ?GraphicColor:Color):NSprite {
-		var g = NGraphicPool.get(Width, Height, GraphicColor);
+		var g = NGraphicPool.getM(Width, Height, GraphicColor);
 		width = Width;
 		height = Height;
 		if (g == null) {
@@ -33,19 +33,27 @@ class NSprite extends NEntity {
 			graphic.g2.color = GraphicColor;
 			graphic.g2.fillRect(0, 0, Width, Height);
 			graphic.g2.end();
-			NGraphicPool.put(Width, Height, GraphicColor, graphic);
+			NGraphicPool.putM(Width, Height, GraphicColor, graphic);
 		} else {
 			graphic = g;
 		}
 		return this;
 	}
 
-	public function renderGraphic(Width:Int, Height:Int, render:NGraphic->Void):NSprite {
+	public function renderGraphic(Width:Int, Height:Int, render:NGraphic->Void, ?Key:String = null):NSprite {
+		var g = NGraphicPool.getR(Width, Height, Key);
 		width = Width;
 		height = Height;
-		var target = Image.createRenderTarget(Width, Height);
-		render(target);
-		graphic = target;
+		if (g == null) {
+			var target = Image.createRenderTarget(Width, Height);
+			render(target);
+			graphic = target;
+			if (Key != null) {
+				NGraphicPool.putR(Width, Height, Key, graphic);
+			}
+		} else {
+			graphic = g;
+		}
 		return this;
 	}
 
