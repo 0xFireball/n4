@@ -28,6 +28,7 @@ class NGame {
 	public static var currentState:NState = new NState();
 	public static var drawFrameCount(default, null):Int = 0;
 	public static var updateFrameCount(default, null):Int = 0;
+	public static var assetsLoaded(get, null):Bool;
 
 	// render options
 	public static var useDoubleBuffering:Bool = true;
@@ -131,6 +132,10 @@ class NGame {
 		worldBounds.set(-10, -10, width + 20, height + 20);
 		drawFrameCount = 0;
 		updateFrameCount = 0;
+	}
+
+	private static function get_assetsLoaded():Bool {
+		return !(Assets.progress < 1);
 	}
 	
 	// collision detection
