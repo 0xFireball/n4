@@ -4,7 +4,7 @@
 an extremely lightweight 2d graphics framework for kha
 
 design is inspired by haxeflixel, but n4 is much more minimal.
-n4 uses a lot of code ripped directly from flixel with some modifications
+n4 uses a lot of code (mostly math) ripped directly from flixel with some modifications
 and unnecessary parts removed.
 
 ## features
