@@ -8,6 +8,7 @@ import kha.Scheduler;
 import kha.System;
 
 import n4.input.keyboard.NKeyboard;
+import n4.input.touch.NTouchSurface;
 import n4.events.NTimerManager;
 import n4.math.NRect;
 import n4.preload.N4AssetPreloader;

@@ -1,13 +1,6 @@
 package n4.input.keyboard;
 
-class NKeyState {
-	private var down:Bool = false;
+import n4.input.NPressEventState;
 
-	public function press() {
-		down = true;
-	}
-
-	public function release() {
-		down = false;
-	}
+class NKeyState extends NPressEventState {
 }
