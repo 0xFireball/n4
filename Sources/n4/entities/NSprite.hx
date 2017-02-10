@@ -4,6 +4,7 @@ import kha.Canvas;
 import kha.Color;
 import kha.Image;
 import n4.assets.NGraphic;
+import n4.pooling.NGraphicPool;
 
 class NSprite extends NEntity {
 
@@ -22,14 +23,20 @@ class NSprite extends NEntity {
 	}
 
 	public function makeGraphic(Width:Int, Height:Int, ?GraphicColor:Color):NSprite {
-		GraphicColor = (GraphicColor == null) ? Color.White : GraphicColor;
-		width = Width;
-		height = Height;
-		graphic = Image.createRenderTarget(Width, Height);
-		graphic.g2.begin();
-		graphic.g2.color = GraphicColor;
-		graphic.g2.fillRect(0, 0, Width, Height);
-		graphic.g2.end();
+		var g = NGraphicPool.get(Width, Height, GraphicColor);
+		if (g == null) {
+			GraphicColor = (GraphicColor == null) ? Color.White : GraphicColor;
+			width = Width;
+			height = Height;
+			graphic = Image.createRenderTarget(Width, Height);
+			graphic.g2.begin();
+			graphic.g2.color = GraphicColor;
+			graphic.g2.fillRect(0, 0, Width, Height);
+			graphic.g2.end();
+			NGraphicPool.put(Width, Height, GraphicColor, graphic);
+		} else {
+			graphic = g;
+		}
 		return this;
 	}
 

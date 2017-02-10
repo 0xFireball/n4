@@ -95,7 +95,6 @@ class NTypedGroup<T:NBasic> extends NBasic {
 			while (i < memberCount)
 			{
 				member = members[i++];
-				
 				if (member != null && member.exists)
 					member.destroy();
 			}

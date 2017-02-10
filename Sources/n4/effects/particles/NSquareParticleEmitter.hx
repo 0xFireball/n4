@@ -5,7 +5,7 @@ import kha.math.FastVector2;
 import n4.group.NTypedGroup;
 
 class NSquareParticleEmitter extends NTypedGroup<NParticle> {
-	public function new(MaxSize:Int = 0) {
+	public function new(MaxSize:Int = 40) {
 		super(MaxSize);
 	}
 

@@ -44,7 +44,7 @@ class NGame {
 		var gdt = _clock.dt;
 		// var gdt = 1 / targetFramerate;
 		// trace("current framerate: " + 1 / gdt);
-		timers.update(gdt);
+		// timers.update(gdt);
 		currentState.update(gdt);
 	}
 
@@ -70,7 +70,7 @@ class NGame {
     	_backbuffer = Image.createRenderTarget(width, height);
 		// set up
 		_clock = new NClock();
-		timers = new NTimerManager();
+		// timers = new NTimerManager();
 		keys = new NKeyboard();
 		// set up state
 		currentState = Type.createInstance(_initialState, []);
