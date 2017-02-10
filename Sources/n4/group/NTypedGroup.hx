@@ -19,6 +19,7 @@ class NTypedGroup<T:NBasic> extends NBasic {
 
 		maxSize = MaxSize;
 		members = [];
+		n4Type = GROUP;
 	}
 
 	private function getFirstAvailable():Int {

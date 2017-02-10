@@ -195,6 +195,7 @@ class NEntity extends NBasic {
 	}
 
 	private function init() {
+		n4Type = OBJECT;
 		last = new NPoint(x, y);
 		velocity = new NPoint(0, 0);
 		maxVelocity = new NPoint(10000, 10000);
