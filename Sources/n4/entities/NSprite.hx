@@ -3,6 +3,7 @@ package n4.entities;
 import kha.Canvas;
 import kha.Color;
 import kha.Image;
+import kha.math.FastMatrix3;
 import n4.assets.NGraphic;
 import n4.pooling.NGraphicPool;
 
@@ -18,7 +19,9 @@ class NSprite extends NEntity {
 	override public function render(f:Canvas) {
 		var ctx = f.g2;
 		ctx.color = color;
+		ctx.pushRotation(angle, x + width / 2, y + height / 2);
 		ctx.drawImage(graphic, x, y);
+		ctx.popTransformation();
 		super.render(f);
 	}
 

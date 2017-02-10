@@ -27,7 +27,7 @@ class NEntity extends NBasic {
 	public var height(get, set):FastFloat;
 
 	/**
-	 * Set the angle (in degrees) of a sprite to rotate it. WARNING: rotating sprites
+	 * Set the angle (in radians) of a sprite to rotate it. WARNING: rotating sprites
 	 * decreases their rendering performance by a factor of ~10x when using blitting!
 	 */
 	public var angle(default, set):Float = 0;
@@ -53,11 +53,11 @@ class NEntity extends NBasic {
 	public var maxVelocity(default, null):NPoint;
 
 	/**
-	 * This is how fast you want this sprite to spin (in degrees per second).
+	 * This is how fast you want this sprite to spin (in radians per second).
 	 */
 	public var angularVelocity:Float = 0;
 	/**
-	 * How fast the spin speed should change (in degrees per second).
+	 * How fast the spin speed should change (in radians per second).
 	 */
 	public var angularAcceleration:Float = 0;
 	/**
