@@ -14,6 +14,7 @@ class NSprite extends NEntity {
 
 	public function new(?X:Float = 0, ?Y:Float = 0, ?Graphic:NGraphic) {
 		super(X, Y);
+		graphic = Graphic;
 	}
 
 	override public function render(f:Canvas) {

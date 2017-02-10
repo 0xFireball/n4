@@ -1,5 +1,6 @@
 package n4;
 
+import kha.Assets;
 import kha.Framebuffer;
 import kha.Image;
 import kha.Scaler;
@@ -7,9 +8,9 @@ import kha.Scheduler;
 import kha.System;
 
 import n4.input.keyboard.NKeyboard;
-import n4.input.touch.NTouchSurface;
 import n4.events.NTimerManager;
 import n4.math.NRect;
+import n4.preload.N4AssetPreloader;
 import n4.system.NQuadTree;
 
 class NGame {
@@ -66,10 +67,12 @@ class NGame {
 	private static function ge_update():Void {
 		++updateFrameCount;
 		_clock.update();
-		var gdt = _clock.dt;
-		// var gdt = Math.min(1 / targetFramerate, _clock.dt);
+		// for frame stability, use half the framerate as a minimum
+		var gdt = Math.min(_clock.dt, 2 / targetFramerate);
+		// #if debug
 		// trace("current framerate: " + 1 / gdt);
- 		// timers.update(gdt);
+		// #end
+ 		timers.update(gdt);
 		currentState.update(gdt);
 	}
 
@@ -94,20 +97,33 @@ class NGame {
 	}
 
 	private static function onInitialized() {
-		// create a drawing buffer
-    	_backbuffer = Image.createRenderTarget(width, height);
 		// set up
 		_clock = new NClock();
 		initVars();
-		// timers = new NTimerManager();
+		timers = new NTimerManager();
 		keys = new NKeyboard();
-		// set up state
-		currentState = Type.createInstance(_initialState, []);
-		switchState(currentState);
+		// create a drawing buffer
+    	_backbuffer = Image.createRenderTarget(width, height);
+		var hasAssets:Bool = Assets.progress < 1;
+		if (hasAssets) {
+			// start loading assets
+			Assets.loadEverything(onAssetsLoaded);
+			// start preloader state
+			currentState = new N4AssetPreloader();
+			switchState(currentState);
+		} else {
+			onAssetsLoaded();
+		}
 		System.notifyOnRender(ge_render);
 		if (!syncDrawUpdate) {
 			Scheduler.addTimeTask(ge_update, 0, 1 / targetFramerate);
 		}
+	}
+
+	private static function onAssetsLoaded() {
+		// set up main state
+		currentState = Type.createInstance(_initialState, []);
+		switchState(currentState);
 	}
 
 	private static function initVars() {

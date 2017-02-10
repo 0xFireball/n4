@@ -12,7 +12,7 @@ class NState extends NGroup {
 	}
 
 	/**
-	 * Should be overrided to be customized
+	 * To customize the state, override this method.
 	 */
 	public function create():Void {
 	}
