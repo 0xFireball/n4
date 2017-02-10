@@ -23,6 +23,7 @@ class NGame {
 	public static var frameCount(default, null):Int = 0;
 	// render options
 	public static var useDoubleBuffering:Bool = true;
+	public static var syncDrawUpdate:Bool = true;
 
 	public static function init(?Title:String = "n4", ?Width:Int = 800, ?Height:Int = 600, ?InitialState:Class<NState>, ?Framerate:Int = 60) {
 		width = Width;
@@ -42,13 +43,16 @@ class NGame {
 	private static function ge_update():Void {
 		_clock.update();
 		var gdt = _clock.dt;
-		// var gdt = 1 / targetFramerate;
+		// var gdt = Math.min(1 / targetFramerate, _clock.dt);
 		// trace("current framerate: " + 1 / gdt);
-		// timers.update(gdt);
+ 		// timers.update(gdt);
 		currentState.update(gdt);
 	}
 
 	private static function ge_render(framebuffer: Framebuffer): Void {
+		if (syncDrawUpdate) {
+			ge_update();
+		}
 		++frameCount;
 		if (useDoubleBuffering) {
 			_backbuffer.g2.begin(true, currentState.bgColor);
@@ -76,6 +80,8 @@ class NGame {
 		currentState = Type.createInstance(_initialState, []);
 		switchState(currentState);
 		System.notifyOnRender(ge_render);
-		Scheduler.addTimeTask(ge_update, 0, 1 / targetFramerate);
+		if (!syncDrawUpdate) {
+			Scheduler.addTimeTask(ge_update, 0, 1 / targetFramerate);
+		}
 	}
 }
