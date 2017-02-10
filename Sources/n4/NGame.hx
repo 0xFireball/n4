@@ -22,7 +22,8 @@ class NGame {
 	public static var targetFramerate:Int;
 	public static var keys:NKeyboard;
 	public static var timers:NTimerManager;
-	public static var frameCount(default, null):Int = 0;
+	public static var drawFrameCount(default, null):Int = 0;
+	public static var updateFrameCount(default, null):Int = 0;
 	// render options
 	public static var useDoubleBuffering:Bool = true;
 	public static var syncDrawUpdate:Bool = true;
@@ -55,6 +56,7 @@ class NGame {
 	}
 
 	private static function ge_update():Void {
+		++updateFrameCount;
 		_clock.update();
 		var gdt = _clock.dt;
 		// var gdt = Math.min(1 / targetFramerate, _clock.dt);
@@ -67,7 +69,7 @@ class NGame {
 		if (syncDrawUpdate) {
 			ge_update();
 		}
-		++frameCount;
+		++drawFrameCount;
 		if (useDoubleBuffering) {
 			_backbuffer.g2.begin(true, currentState.bgColor);
 			currentState.render(_backbuffer);
@@ -102,6 +104,8 @@ class NGame {
 
 	private static function initVars() {
 		worldBounds.set(-10, -10, width + 20, height + 20);
+		drawFrameCount = 0;
+		updateFrameCount = 0;
 	}
 	
 	// collision detection
