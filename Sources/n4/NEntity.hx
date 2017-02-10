@@ -1,8 +1,8 @@
 package n4;
 
 import kha.Canvas;
-import kha.math.FastVector2;
 import kha.FastFloat;
+import n4.math.NPoint;
 import n4.math.NVelocityCalc;
 
 class NEntity extends NBasic {
@@ -35,22 +35,22 @@ class NEntity extends NBasic {
 	/**
 	 * The basic speed of this object (in pixels per second).
 	 */
-	public var velocity(default, null):FastVector2;
+	public var velocity(default, null):NPoint;
 	/**
 	 * How fast the speed of this object is changing (in pixels per second).
 	 * Useful for smooth movement and gravity.
 	 */
-	public var acceleration(default, null):FastVector2;
+	public var acceleration(default, null):NPoint;
 	/**
 	 * This isn't drag exactly, more like deceleration that is only applied
 	 * when acceleration is not affecting the sprite.
 	 */
-	public var drag(default, null):FastVector2;
+	public var drag(default, null):NPoint;
 	/**
 	 * If you are using acceleration, you can use maxVelocity with it
 	 * to cap the speed automatically (very useful!).
 	 */
-	public var maxVelocity(default, null):FastVector2;
+	public var maxVelocity(default, null):NPoint;
 
 	/**
 	 * This is how fast you want this sprite to spin (in degrees per second).
@@ -93,10 +93,10 @@ class NEntity extends NBasic {
 	}
 
 	private function init() {
-		velocity = new FastVector2(0, 0);
-		maxVelocity = new FastVector2(10000, 10000);
-		acceleration = new FastVector2(0, 0);
-		drag = new FastVector2(0, 0);
+		velocity = new NPoint(0, 0);
+		maxVelocity = new NPoint(10000, 10000);
+		acceleration = new NPoint(0, 0);
+		drag = new NPoint(0, 0);
 	}
 
 	override public function update(dt:Float):Void {
@@ -159,6 +159,6 @@ class NEntity extends NBasic {
 	}
 
 	private function get_momentum():Float {
-		return mass * velocity.length;
+		return mass * velocity.toVector().length;
 	}
 }
