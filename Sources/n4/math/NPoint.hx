@@ -1,6 +1,6 @@
 package n4.math;
 
-import kha.math.FastMatrix4;
+import kha.math.FastVector2;
 
 /**
  * Stores a 2D floating point coordinate.
@@ -20,6 +20,11 @@ class NPoint
 	public function toVector():NVector
 	{
 		return new NVector(x, y);
+	}
+
+	public function toFastVector2():FastVector2
+	{
+		return new FastVector2(x, y);
 	}
 	
 	/**
