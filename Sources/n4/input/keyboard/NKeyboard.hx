@@ -26,6 +26,7 @@ class NKeyboard {
 	private function onKeyUp(k:Key, c:String) {
 		if (c == "") c = k.getName().toUpperCase();
 		else c = c.toUpperCase();
+		if (state[c] == null) state[c] = new NKeyState();
 		list.remove(state[c]);
 		state[c].release();
 	}
