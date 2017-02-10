@@ -33,6 +33,25 @@ class NTypedGroup<T:NBasic> extends NBasic {
 		}
 		return -1;
 	}
+
+	@:noCompletion
+	private static function resolveGroup(ObjectOrGroup:NBasic):NTypedGroup<NBasic>
+	{
+		var group:NTypedGroup<NBasic> = null;
+		if (ObjectOrGroup != null)
+		{
+			if (ObjectOrGroup.n4Type == GROUP)
+			{
+				group = cast ObjectOrGroup;
+			}
+			// else if (ObjectOrGroup.n4Type == SPRITEGROUP)
+			// {
+			// 	var spriteGroup:NTypedSpriteGroup<Dynamic> = cast ObjectOrGroup;
+			// 	group = cast spriteGroup.group;
+			// }
+		}
+		return group;
+	}
 	
 	public function forEachActive(action:T->Void) {
 		for (m in members) {
