@@ -17,16 +17,16 @@ class NKeyboard {
 
 	private function onKeyDown(k:Key, c:String) {
 		if (c == "") c = k.getName().toUpperCase();
-		else c = c.toUpperCase();
 		if (state[c] == null) state[c] = new NKeyState();
+		else c = c.toUpperCase();
 		list.push(state[c]);
 		state[c].press();
 	}
 
 	private function onKeyUp(k:Key, c:String) {
 		if (c == "") c = k.getName().toUpperCase();
-		else c = c.toUpperCase();
 		if (state[c] == null) state[c] = new NKeyState();
+		else c = c.toUpperCase();
 		list.remove(state[c]);
 		state[c].release();
 	}
