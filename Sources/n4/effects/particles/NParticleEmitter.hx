@@ -1,6 +1,7 @@
 package n4.effects.particles;
 
 import kha.Color;
+import n4.assets.NGraphic;
 import n4.group.NTypedGroup;
 import n4.math.NPoint;
 
@@ -14,9 +15,21 @@ class NParticleEmitter extends NTypedGroup<NParticle> {
 		Y -= Size / 2;
 		var particle = new NParticle(X, Y, PColor, Life);
 		particle.makeGraphic(Size, Size, PColor);
-		particle.velocity.x = Velocity.x;
-		particle.velocity.y = Velocity.y;
-		add(particle);
+		emitInternal(particle, Velocity);
+	}
+
+	public function emitCustom(X:Float, Y:Float, Width:Int, Height:Int, Render:NGraphic->Void, Key:String, Velocity:NPoint, PColor:Color, Life:Float = 0) {
+		X -= Width / 2;
+		Y -= Height / 2;
+		var particle = new NParticle(X, Y, PColor, Life);
+		particle.renderGraphic(Width, Height, Render, Key);
+		emitInternal(particle, Velocity);
+	}
+	
+	private function emitInternal(Particle:NParticle, Velocity:NPoint) {
+		Particle.velocity.x = Velocity.x;
+		Particle.velocity.y = Velocity.y;
+		add(Particle);
 	}
 
 	public static function velocitySpread(Radius:Float, XOffset:Float = 0, YOffset:Float = 0):NPoint {
