@@ -4,12 +4,12 @@ import kha.Color;
 import n4.group.NTypedGroup;
 import n4.math.NPoint;
 
-class NSquareParticleEmitter extends NTypedGroup<NParticle> {
+class NParticleEmitter extends NTypedGroup<NParticle> {
 	public function new(MaxSize:Int = 40) {
 		super(MaxSize);
 	}
 
-	public function emit(X:Float, Y:Float, Size:Int, Velocity:NPoint, PColor:Color, Life:Float = 0) {
+	public function emitSquare(X:Float, Y:Float, Size:Int, Velocity:NPoint, PColor:Color, Life:Float = 0) {
 		X -= Size / 2;
 		Y -= Size / 2;
 		var particle = new NParticle(X, Y, PColor, Life);
