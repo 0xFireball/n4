@@ -14,7 +14,7 @@ class NTimerManager {
 		var i:Int = 0;      
 		while (i < timers.length) {
 			var t = timers[i];
-			if (t.triggerTime >= totalElapsed) {
+			if (totalElapsed >= t.triggerTime) {
 				t.execute();
 				timers.splice(i, 1);
 			} else {
@@ -23,7 +23,11 @@ class NTimerManager {
 		}
 	}
 
+	/**
+	 * Schedule a callback to run after a certain
+	 * number of milliseconds.
+	 */
 	public function setTimer(delay:Float, callback:Void->Void) {
-		timers.push(new NTimer(totalElapsed + delay, callback));
+		timers.push(new NTimer(totalElapsed + delay / 1000, callback));
 	}
 }
