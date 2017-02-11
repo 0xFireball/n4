@@ -5,6 +5,7 @@ import kha.FastFloat;
 import n4.math.NPoint;
 import n4.math.NRect;
 import n4.math.NVelocityCalc;
+import n4.util.NAxes;
 
 class NEntity extends NBasic {
 
@@ -574,6 +575,16 @@ class NEntity extends NBasic {
 		// }
 		// Since we are not separating, always return any amount of overlap => false as last parameter
 		return computeOverlapY(Object1, Object2, false) != 0;
+	}
+
+	public function screenCenter(?axes:NAxes):NEntity {
+		if (axes == null) axes = NAxes.XY;
+		if (axes != NAxes.Y)
+			x = (NGame.width / 2) - (width / 2);
+		if (axes != NAxes.X)
+			y = (NGame.height / 2) - (height / 2);
+		
+		return this;
 	}
 
 	private function set_x(Value:Float):Float {
