@@ -213,8 +213,7 @@ class NEntity extends NBasic {
 	override public function update(dt:Float):Void {
 		super.update(dt);
 
-		last.x = x;
-		last.y = y;
+		last.set(x, y);
 
 		// motion updates
 		updateMotion(dt);
