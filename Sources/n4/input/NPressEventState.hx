@@ -6,6 +6,7 @@ class NPressEventState {
 
 	private var down:Bool = false;
 	private var pressFrame:Int;
+	private static var justPressedFrames:Int = 1;
 
 	public function new() {
 
@@ -27,7 +28,7 @@ class NPressEventState {
 	}
 
 	private function get_justPressed() {
-		return down && pressFrame == NGame.updateFrameCount;
+		return down && NGame.updateFrameCount - pressFrame <= justPressedFrames;
 	}
 
 	private function get_pressed() {
