@@ -88,6 +88,11 @@ class NEntity extends NBasic {
 	public var last(default, null):NPoint;
 
 	/**
+	 * The center of this sprite calculated with the position and dimensions
+	 */
+	public var center(get, null):NPoint;
+
+	/**
 	 * X position of the upper left corner of this object in world space.
 	 */
 	public var x(default, set):FastFloat = 0;
@@ -649,5 +654,10 @@ class NEntity extends NBasic {
 	private function set_allowCollisions(Value:Int):Int 
 	{
 		return allowCollisions = Value;
+	}
+
+	private function get_center():NPoint
+	{
+		return new NPoint(x + width / 2, y + height / 2);
 	}
 }
