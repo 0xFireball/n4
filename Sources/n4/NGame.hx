@@ -106,16 +106,11 @@ class NGame {
 		keys = new NKeyboard();
 		// create a drawing buffer
     	_backbuffer = Image.createRenderTarget(width, height);
-		var hasAssets:Bool = Assets.progress < 1;
-		if (hasAssets) {
-			// start loading assets
-			Assets.loadEverything(onAssetsLoaded);
-			// start preloader state
-			currentState = new N4AssetPreloader();
-			switchState(currentState);
-		} else {
-			onAssetsLoaded();
-		}
+		// start loading assets
+		Assets.loadEverything(onAssetsLoaded);
+		// start preloader state
+		currentState = new N4AssetPreloader();
+		switchState(currentState);
 		System.notifyOnRender(ge_render);
 		if (!syncDrawUpdate) {
 			Scheduler.addTimeTask(ge_update, 0, 1 / targetFramerate);
