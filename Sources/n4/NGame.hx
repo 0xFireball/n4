@@ -114,11 +114,11 @@ class NGame {
 		keys = new NKeyboard();
 		// create a drawing buffer
     	_backbuffer = Image.createRenderTarget(width, height);
-		// start loading assets
-		Assets.loadEverything(onAssetsLoaded);
 		// start preloader state
 		currentState = new N4AssetPreloader();
 		switchState(currentState);
+		// start loading assets
+		Assets.loadEverything(onAssetsLoaded);
 		System.notifyOnRender(ge_render);
 		if (!syncDrawUpdate) {
 			Scheduler.addTimeTask(ge_update, 0, 1 / targetFramerate);
