@@ -52,6 +52,14 @@ class NGame {
 	public static var worldDivisions:Int = 6;
 
 	public static function init(?Title:String = "n4", ?Width:Int = 800, ?Height:Int = 600, ?InitialState:Class<NState>, ?Framerate:Int = 60) {
+		#if sys_html5
+		if (Width == 0 && Height == 0) {
+			Width =
+				untyped __js__('window.innerWidth');
+			Height = 
+				untyped __js__('window.innerHeight');
+		}
+		#end
 		width = Width;
 		height = Height;
 		targetFramerate = Framerate;
