@@ -56,7 +56,7 @@ class NGame {
 		height = Height;
 		targetFramerate = Framerate;
 		_initialState = (InitialState == null) ? NState : InitialState;
-		System.init({title: Title, width: Width, height: Height, samplesPerPixel: 4}, function () {
+		System.init({title: Title, width: Width, height: Height, samplesPerPixel: 16}, function () {
 			onInitialized();
 		});
 	}
