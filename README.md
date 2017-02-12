@@ -1,7 +1,8 @@
 
 # n4
 
-an extremely lightweight 2d graphics framework for kha
+a lightweight and minimal 2d game engine
+built from scratch on kha's cross-platform low-level graphics
 
 design is inspired by haxeflixel, but n4 is much more minimal.
 n4 uses a lot of code (mostly math) ripped directly from flixel with some modifications
