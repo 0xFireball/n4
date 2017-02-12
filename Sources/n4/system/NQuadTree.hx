@@ -378,7 +378,7 @@ class NQuadTree extends NRect implements INDestroyable
 			var i:Int = 0;
 			var basic:NBasic;
 			var members:Array<NBasic> = group.members;
-			var l:Int = group.memberCount;
+			var l:Int = group.members.length; // we need to check all the way
 			while (i < l)
 			{
 				basic = members[i++];
