@@ -27,8 +27,8 @@ class NKeyboard {
 		if (c == "") c = k.getName().toUpperCase();
 		if (state[c] == null) state[c] = new NKeyState();
 		else c = c.toUpperCase();
-		list.remove(state[c]);
 		state[c].release();
+		list.remove(state[c]);
 	}
 
 	public function pressed(keys:Array<String>):Bool {
