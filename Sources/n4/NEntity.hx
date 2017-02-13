@@ -3,6 +3,7 @@ package n4;
 import kha.Canvas;
 import kha.FastFloat;
 import n4.math.NPoint;
+import n4.math.NVector;
 import n4.math.NRect;
 import n4.math.NVelocityCalc;
 import n4.util.NAxes;
@@ -178,7 +179,7 @@ class NEntity extends NBasic {
 	public var maxAngular:Float = 10000;
 
 
-	// Utilties
+	// Physics/Utilities
 
 	/**
 	 * Utility for storing health
@@ -187,7 +188,7 @@ class NEntity extends NBasic {
 
 	public var mass:Float = 1;
 
-	public var momentum(get, null):Float;
+	public var momentum(get, null):NVector;
 
 	public function new(X:Float = 0, Y:Float = 0, Width:Float = 0, Height:Float = 0) {
 		super();
@@ -633,8 +634,8 @@ class NEntity extends NBasic {
 		return height = Value;
 	}
 
-	private function get_momentum():Float {
-		return mass * velocity.toVector().length;
+	private function get_momentum():NVector {
+		return velocity.toVector().scale(mass);
 	}
 
 	@:noCompletion
