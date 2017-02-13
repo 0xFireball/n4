@@ -184,7 +184,17 @@ class NEntity extends NBasic {
 	/**
 	 * Utility for storing health
 	 */
-	public var health:Float = 1;
+	public var health:Float;
+
+	/**
+	 * Utility for storing maximum health
+	 */
+	public var maxHealth:Float = 1;
+
+	/**
+	 * Utility for manipulating health in relation to maximum health
+	 */
+	public var damage(get, set):Float;
 
 	public var mass:Float = 1;
 
@@ -203,6 +213,7 @@ class NEntity extends NBasic {
 
 	private function init() {
 		n4Type = OBJECT;
+		health = maxHealth;
 		last = new NPoint(x, y);
 		velocity = new NPoint(0, 0);
 		maxVelocity = new NPoint(10000, 10000);
@@ -659,5 +670,14 @@ class NEntity extends NBasic {
 	private function get_center():NPoint
 	{
 		return new NPoint(x + width / 2, y + height / 2);
+	}
+
+	private function get_damage():Float {
+		return health / maxHealth;
+	}
+
+	private function set_damage(f:Float):Float {
+		health = f * maxHealth;
+		return damage;
 	}
 }
