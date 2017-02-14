@@ -71,7 +71,7 @@ class NGame {
 
 	public static function switchState(state:NState) {
 		currentState = state;
-		currentState.create();
+		if (!currentState.created) currentState.create();
 	}
 
 	private static function ge_update():Void {
