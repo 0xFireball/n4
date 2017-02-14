@@ -20,8 +20,8 @@ class NGame {
 	private static var _clock:NClock;
 	
 	// configuration
-	public static var width:Int;
-	public static var height:Int;
+	public static var width(default, null):Int;
+	public static var height(default, null):Int;
 	public static var targetFramerate:Int;
 
 	// state variables
@@ -38,6 +38,8 @@ class NGame {
 	public static var keys:NKeyboard;
 	public static var touches:NTouchSurface;
 	public static var timers:NTimerManager;
+
+	public static var hypot(get, never):Float;
 
 	/**
 	 * The dimensions of the game world, used by the quad tree for collisions and overlap checks.
@@ -192,5 +194,9 @@ class NGame {
 		var result:Bool = quadTree.execute();
 		quadTree.destroy();
 		return result;
+	}
+
+	private static function get_hypot():Float {
+		return Math.sqrt(width * width + width * width);
 	}
 }
