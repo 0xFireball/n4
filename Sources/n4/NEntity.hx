@@ -196,6 +196,8 @@ class NEntity extends NBasic {
 	 */
 	public var damage(get, set):Float;
 
+	public var invincible(default, set):Bool;
+
 	public var mass:Float = 1;
 
 	public var momentum(get, null):NVector;
@@ -603,6 +605,12 @@ class NEntity extends NBasic {
 		return this;
 	}
 
+	public function hurt(amount:Float) {
+		if (!invincible) {
+			health -= amount;
+		}
+	}
+
 	private function set_x(Value:Float):Float {
 		return x = Value;
 	}
@@ -680,5 +688,9 @@ class NEntity extends NBasic {
 	private function set_damage(f:Float):Float {
 		health = (1 - f) * maxHealth;
 		return damage;
+	}
+
+	private function set_invincible(b:Bool):Bool {
+		return invincible = b;
 	}
 }
