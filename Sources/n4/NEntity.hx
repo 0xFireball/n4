@@ -673,7 +673,8 @@ class NEntity extends NBasic {
 	}
 
 	private function get_damage():Float {
-		return 1 - (health / maxHealth);
+		var mHealth = health < 0 ? 0 : health;
+		return 1 - (mHealth / maxHealth);
 	}
 
 	private function set_damage(f:Float):Float {
