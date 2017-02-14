@@ -35,6 +35,17 @@ class NTypedGroup<T:NBasic> extends NBasic {
 		return -1;
 	}
 
+	private function firstWhere(predicate:T->Bool):T {
+		var result:T = null;
+		for (m in members) {
+			if (m != null && m.exists) {
+				var ev = predicate(m);
+				if (ev) result = m;
+			}
+		}
+		return result;
+	}
+
 	@:noCompletion
 	private static function resolveGroup(ObjectOrGroup:NBasic):NTypedGroup<NBasic>
 	{
