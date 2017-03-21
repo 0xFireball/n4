@@ -13,6 +13,7 @@ import n4.events.NTimerManager;
 import n4.math.NRect;
 import n4.preload.N4AssetPreloader;
 import n4.system.NQuadTree;
+import n4.util.NCollision;
 
 class NGame {
 	private static var _backbuffer:Image;
@@ -194,6 +195,26 @@ class NGame {
 		var result:Bool = quadTree.execute();
 		quadTree.destroy();
 		return result;
+	}
+
+	/**
+	 * A pixel perfect collision check between two `NSprite` objects.
+	 * It will do a bounds check first, and if that passes it will run a
+	 * pixel perfect match on the intersecting area. Works with rotated and animated sprites.
+	 * May be slow, so use it sparingly.
+	 * 
+	 * @param   Sprite1          The first `NSprite` to test against.
+	 * @param   Sprite2          The second `NSprite` to test again, sprite order is irrelevant.
+	 * @param   AlphaTolerance   The tolerance value above which alpha pixels are included.
+	 *                           Default to `255` (must be fully opaque for collision).
+	 * @param   Camera           If the collision is taking place in a camera other than
+	 *                          `NG.camera` (the default/current) then pass it here.
+	 * @return  Whether the sprites collide
+	 */
+	public static inline function pixelPerfectOverlap(Sprite1:NSprite, Sprite2:NSprite, AlphaTolerance:Int = 255,
+		?Camera:NCamera):Bool
+	{
+		return NCollision.pixelPerfectCheck(Sprite1, Sprite2, AlphaTolerance, Camera);
 	}
 
 	private static function get_hypot():Float {

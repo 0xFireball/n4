@@ -1,0 +1,299 @@
+package n4.util;
+
+// import n4.NCamera;
+import n4.NG;
+import n4.NSprite;
+import n4.group.NGroup;
+import n4.math.NAngle;
+import n4.math.NMath;
+import n4.math.NRect;
+import n4.math.NVector;
+import n4.math.NMatrix;
+import n4.tile.NTileblock;
+
+/**
+ * FlxCollision
+ * From flixel.util.FlxCollision
+ *
+ * @link http://www.photonstorm.com
+ * @author Richard Davey / Photon Storm
+*/
+class NCollision 
+{
+	// Optimization: Local static vars to reduce allocations
+	private static var pointA:NVector = new NVector();
+	private static var pointB:NVector = new NVector();
+	private static var centerA:NVector = new NVector();
+	private static var centerB:NVector = new NVector();
+	private static var matrixA:NMatrix = new NMatrix();
+	private static var matrixB:NMatrix = new NMatrix();
+	private static var testMatrix:NMatrix = new NMatrix();
+	private static var boundsA:NRect = new NRect();
+	private static var boundsB:NRect = new NRect();
+	private static var intersect:NRect = new NRect();
+	private static var flashRect:Rectangle = new Rectangle();
+	
+	/**
+	 * A Pixel Perfect Collision check between two NSprites. It will do a bounds check first, and if that passes it will run a 
+	 * pixel perfect match on the intersecting area. Works with rotated and animated sprites. May be slow, so use it sparingly.
+	 * 
+	 * @param	Contact			The first NSprite to test against
+	 * @param	Target			The second NSprite to test again, sprite order is irrelevant
+	 * @param	AlphaTolerance	The tolerance value above which alpha pixels are included. Default to 1 (anything that is not fully invisible).
+	 * @param	Camera			If the collision is taking place in a camera other than NG.camera (the default/current) then pass it here
+	 * @return	Whether the sprites collide
+	 */
+	public static function pixelPerfectCheck(Contact:NSprite, Target:NSprite, AlphaTolerance:Int = 1, ?Camera:NCamera):Bool
+	{
+		//if either of the angles are non-zero, consider the angles of the sprites in the pixel check
+		var considerRotation:Bool = (Contact.angle != 0) || (Target.angle != 0);
+		
+		Camera = (Camera != null) ? Camera : NG.camera;
+		
+		pointA.x = Contact.x - Std.int(Camera.scroll.x * Contact.scrollFactor.x) - Contact.offset.x;
+		pointA.y = Contact.y - Std.int(Camera.scroll.y * Contact.scrollFactor.y) - Contact.offset.y;
+		
+		pointB.x = Target.x - Std.int(Camera.scroll.x * Target.scrollFactor.x) - Target.offset.x;
+		pointB.y = Target.y - Std.int(Camera.scroll.y * Target.scrollFactor.y) - Target.offset.y;
+		
+		if (considerRotation)
+		{
+			// find the center of both sprites
+			Contact.origin.copyTo(centerA);
+			Target.origin.copyTo(centerB);
+			
+			// now make a bounding box that allows for the sprite to be rotated in 360 degrees
+			var lengthA = centerA.length;
+			boundsA.x = (pointA.x + centerA.x - lengthA);
+			boundsA.y = (pointA.y + centerA.y - lengthA);
+			boundsA.width = lengthA * 2;
+			boundsA.height = boundsA.width;
+			
+			var lengthB = centerB.length;
+			boundsB.x = (pointB.x + centerB.x - lengthB);
+			boundsB.y = (pointB.y + centerB.y - lengthB);
+			boundsB.width = lengthB * 2;
+			boundsB.height = boundsB.width;
+		}
+		else
+		{
+			boundsA.x = pointA.x;
+			boundsA.y = pointA.y;
+			boundsA.width = Contact.frameWidth;
+			boundsA.height = Contact.frameHeight;
+			
+			boundsB.x = pointB.x;
+			boundsB.y = pointB.y;
+			boundsB.width = Target.frameWidth;
+			boundsB.height = Target.frameHeight;
+		}
+		
+		boundsA.intersection(boundsB, intersect.set());
+		
+		if (intersect.isEmpty || intersect.width < 1 || intersect.height < 1)
+		{
+			return false;
+		}
+		
+		//	Thanks to Chris Underwood for helping with the translate logic :)
+		matrixA.identity();
+		matrixA.translate(-(intersect.x - boundsA.x), -(intersect.y - boundsA.y));
+		
+		matrixB.identity();
+		matrixB.translate(-(intersect.x - boundsB.x), -(intersect.y - boundsB.y));
+		
+		Contact.drawFrame();
+		Target.drawFrame();
+		
+		var testA:BitmapData = Contact.framePixels;
+		var testB:BitmapData = Target.framePixels;
+		
+		var overlapWidth:Int = Std.int(intersect.width);
+		var overlapHeight:Int = Std.int(intersect.height);
+		
+		// More complicated case, if either of the sprites is rotated
+		if (considerRotation)
+		{
+			testMatrix.identity();
+			
+			// translate the matrix to the center of the sprite
+			testMatrix.translate(-Contact.origin.x, -Contact.origin.y);
+			
+			// rotate the matrix according to angle
+			testMatrix.rotate(Contact.angle * NAngle.TO_RAD);
+			
+			// translate it back!
+			testMatrix.translate(boundsA.width / 2, boundsA.height / 2);
+			
+			// prepare an empty canvas
+			var testA2:BitmapData = NBitmapDataPool.get(Math.floor(boundsA.width), Math.floor(boundsA.height), true, NColor.TRANSPARENT, false);
+			
+			// plot the sprite using the matrix
+			testA2.draw(testA, testMatrix, null, null, null, false);
+			testA = testA2;
+			
+			// (same as above)
+			testMatrix.identity();
+			testMatrix.translate(-Target.origin.x, -Target.origin.y);
+			testMatrix.rotate(Target.angle * NAngle.TO_RAD);
+			testMatrix.translate(boundsB.width / 2, boundsB.height / 2);
+			
+			var testB2:BitmapData = NBitmapDataPool.get(Math.floor(boundsB.width), Math.floor(boundsB.height), true, NColor.TRANSPARENT, false);
+			testB2.draw(testB, testMatrix, null, null, null, false);
+			testB = testB2;
+		}
+		
+		boundsA.x = Std.int(-matrixA.tx);
+		boundsA.y = Std.int( -matrixA.ty);
+		boundsA.width = overlapWidth;
+		boundsA.height = overlapHeight;
+		
+		boundsB.x = Std.int(-matrixB.tx);
+		boundsB.y = Std.int(-matrixB.ty);
+		boundsB.width = overlapWidth;
+		boundsB.height = overlapHeight;
+		
+		boundsA.copyToFlash(flashRect);
+		var pixelsA = testA.getPixels(flashRect);
+		
+		boundsB.copyToFlash(flashRect);
+		var pixelsB = testB.getPixels(flashRect);
+		
+		var hit = false;
+		
+		// Analyze overlapping area of BitmapDatas to check for a collision (alpha values >= AlphaTolerance)
+		var alphaA:Int = 0;
+		var alphaB:Int = 0;
+		var overlapPixels:Int = overlapWidth * overlapHeight;
+		var alphaIdx:Int = 0;
+		
+		// check even pixels
+		for (i in 0...Math.ceil(overlapPixels / 2)) 
+		{
+			alphaIdx = i << 3;
+			pixelsA.position = pixelsB.position = alphaIdx;
+			alphaA = pixelsA.readUnsignedByte();
+			alphaB = pixelsB.readUnsignedByte();
+			
+			if (alphaA >= AlphaTolerance && alphaB >= AlphaTolerance) 
+			{
+				hit = true;
+				break; 
+			}
+		}
+		
+		if (!hit) 
+		{
+			// check odd pixels
+			for (i in 0...overlapPixels >> 1) 
+			{
+				alphaIdx = (i << 3) + 4;
+				pixelsA.position = pixelsB.position = alphaIdx;
+				alphaA = pixelsA.readUnsignedByte();
+				alphaB = pixelsB.readUnsignedByte();
+				
+				if (alphaA >= AlphaTolerance && alphaB >= AlphaTolerance) 
+				{
+					hit = true;
+					break; 
+				}
+			}
+		}
+		
+		if (considerRotation) 
+		{
+			NBitmapDataPool.put(testA);
+			NBitmapDataPool.put(testB);
+		}
+		
+		return hit;
+	}
+	
+	/**
+	 * A Pixel Perfect Collision check between a given x/y coordinate and an NSprite
+	 * 
+	 * @param	PointX			The x coordinate of the point given in local space (relative to the NSprite, not game world coordinates)
+	 * @param	PointY			The y coordinate of the point given in local space (relative to the NSprite, not game world coordinates)
+	 * @param	Target			The NSprite to check the point against
+	 * @param	AlphaTolerance	The alpha tolerance level above which pixels are counted as colliding. Default to 1 (anything that is not fully invisible).
+	 * @return	Boolean True if the x/y point collides with the NSprite, false if not
+	 */
+	public static function pixelPerfectPointCheck(PointX:Int, PointY:Int, Target:NSprite, AlphaTolerance:Int = 1):Bool
+	{
+		// Intersect check
+		if (!NMath.pointInCoordinates(PointX, PointY, Math.floor(Target.x),
+			Math.floor(Target.y), Std.int(Target.width), Std.int(Target.height)))
+		{
+			return false;
+		}
+		
+		if (NG.renderTile)
+		{
+			Target.drawFrame();
+		}
+		
+		// How deep is pointX/Y within the rect?
+		var test:BitmapData = Target.framePixels;
+		
+		var pixelAlpha = NColor.fromInt(test.getPixel32(Math.floor(PointX - Target.x), Math.floor(PointY - Target.y))).alpha;
+		
+		if (NG.renderTile)
+		{
+			pixelAlpha = Std.int(pixelAlpha * Target.alpha);
+		}
+		
+		// How deep is pointX/Y within the rect?
+		return pixelAlpha >= AlphaTolerance;
+	}
+	
+	/**
+	 * Creates a "wall" around the given camera which can be used for NSprite collision
+	 * 
+	 * @param	Camera				The NCamera to use for the wall bounds (can be NG.camera for the current one)
+	 * @param	Placement			Whether to place the camera wall outside or inside
+	 * @param	Thickness			The thickness of the wall in pixels
+	 * @param	AdjustWorldBounds	Adjust the NG.worldBounds based on the wall (true) or leave alone (false)
+	 * @return	NGroup The 4 NTileblocks that are created are placed into this NGroup which should be added to your State
+	 */
+	public static function createCameraWall(Camera:NCamera, PlaceOutside:Bool = true, Thickness:Int, AdjustWorldBounds:Bool = false):NGroup
+	{
+		var left:NTileblock = null;
+		var right:NTileblock = null;
+		var top:NTileblock = null;
+		var bottom:NTileblock = null;
+		
+		if (PlaceOutside)
+		{
+			left = new NTileblock(Math.floor(Camera.x - Thickness), Math.floor(Camera.y + Thickness), Thickness, Camera.height - (Thickness * 2));
+			right = new NTileblock(Math.floor(Camera.x + Camera.width), Math.floor(Camera.y + Thickness), Thickness, Camera.height - (Thickness * 2));
+			top = new NTileblock(Math.floor(Camera.x - Thickness), Math.floor(Camera.y - Thickness), Camera.width + Thickness * 2, Thickness);
+			bottom = new NTileblock(Math.floor(Camera.x - Thickness), Camera.height, Camera.width + Thickness * 2, Thickness);
+			
+			if (AdjustWorldBounds)
+			{
+				NG.worldBounds.set(Camera.x - Thickness, Camera.y - Thickness, Camera.width + Thickness * 2, Camera.height + Thickness * 2);
+			}
+		}
+		else
+		{
+			left = new NTileblock(Math.floor(Camera.x), Math.floor(Camera.y + Thickness), Thickness, Camera.height - (Thickness * 2));
+			right = new NTileblock(Math.floor(Camera.x + Camera.width - Thickness), Math.floor(Camera.y + Thickness), Thickness, Camera.height - (Thickness * 2));
+			top = new NTileblock(Math.floor(Camera.x), Math.floor(Camera.y), Camera.width, Thickness);
+			bottom = new NTileblock(Math.floor(Camera.x), Camera.height - Thickness, Camera.width, Thickness);
+			
+			if (AdjustWorldBounds)
+			{
+				NG.worldBounds.set(Camera.x, Camera.y, Camera.width, Camera.height);
+			}
+		}
+		
+		var result = new NGroup();
+		
+		result.add(left);
+		result.add(right);
+		result.add(top);
+		result.add(bottom);
+		
+		return result;
+	}
+}
