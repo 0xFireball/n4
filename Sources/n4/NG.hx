@@ -2,6 +2,9 @@ package n4;
 
 import n4.math.NRect;
 import n4.system.NQuadTree;
+import n4.input.keyboard.NKeyboard;
+import n4.input.touch.NTouchSurface;
+import n4.system.camera.NCameraGroup;
 
 // Utilities
 class NG {
@@ -17,8 +20,15 @@ class NG {
 	 */
 	public static var worldDivisions:Int = 6;
 
-
 	public static var hypot(get, never):Float;
+
+	// input and utilities
+	public static var keys:NKeyboard;
+	public static var touches:NTouchSurface;
+
+	// camera
+	public static var cameras:NCameraGroup;
+	public static var camera(get, never):NCamera;
 	
 	// collision detection
 
@@ -75,5 +85,9 @@ class NG {
 
 	private static function get_hypot():Float {
 		return Math.sqrt(NGame.width * NGame.width + NGame.height * NGame.height);
+	}
+
+	private static function get_camera():NCamera {
+		return cameras[0];
 	}
 }

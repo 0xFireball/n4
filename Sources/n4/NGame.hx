@@ -7,10 +7,10 @@ import kha.Scaler;
 import kha.Scheduler;
 import kha.System;
 
-import n4.input.keyboard.NKeyboard;
-import n4.input.touch.NTouchSurface;
 import n4.events.NTimerManager;
 import n4.preload.N4AssetPreloader;
+import n4.input.keyboard.NKeyboard;
+import n4.input.touch.NTouchSurface;
 
 class NGame {
 	private static var _backbuffer:Image;
@@ -33,9 +33,7 @@ class NGame {
 	public static var syncDrawUpdate:Bool = true;
 	public static var stabilizeUpdateInterval:Bool = false;
 
-	// input and utilities
-	public static var keys:NKeyboard;
-	public static var touches:NTouchSurface;
+	// utilities
 	public static var timers:NTimerManager;
 
 	public static function init(?Title:String = "n4", ?Width:Int = 800, ?Height:Int = 600, ?InitialState:Class<NState>, ?Framerate:Int = 60) {
@@ -104,8 +102,11 @@ class NGame {
 		_clock = new NClock();
 		initVars();
 		timers = new NTimerManager();
-		keys = new NKeyboard();
-		// create a drawing buffer
+		// set up input
+		NG.keys = new NKeyboard();
+		NG.touches = new NTouchSurface();
+
+		// create a drawing backbuffer
     	_backbuffer = Image.createRenderTarget(width, height);
 		// start preloader state
 		currentState = new N4AssetPreloader();
