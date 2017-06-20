@@ -6,7 +6,7 @@ import n4.group.NTypedGroup;
 import n4.math.NPoint;
 
 class NParticleEmitter extends NTypedGroup<NParticle> {
-	public function new(MaxSize:Int = 40) {
+	public function new(MaxSize:Int = 1000) {
 		super(MaxSize);
 	}
 

@@ -13,7 +13,7 @@ class NSprite extends NEntity {
 
 	public var graphic(default, set):NGraphic;
 	private var graphicRenderer:Canvas->Void;
-	public var color(default, default):Color = Color.White;
+	public var color:Color = Color.White;
 
 	public function new(?X:Float = 0, ?Y:Float = 0, ?Graphic:NGraphic) {
 		super(X, Y);
@@ -36,10 +36,11 @@ class NSprite extends NEntity {
 	public function makeGraphic(Width:Int, Height:Int, ?GraphicColor:Color) {
 		graphicRenderer = function (f) {
 			f.g2.begin(false);
-			f.g2.color = GraphicColor;
+			f.g2.color = color;
 			f.g2.fillRect(x, y, Width, Height);
 			f.g2.end();
 		};
+		color = GraphicColor;
 		width = Width;
 		height = Height;
 	}
