@@ -80,20 +80,18 @@ class NGame {
 		}
 		++drawFrameCount;
 		var renderCall:kha.Canvas->Void = function(f) {
+			f.g2.begin(true, currentState.bgColor);
 			NG.camera.render(f, currentState);
+			f.g2.end();
 		};
 		if (useDoubleBuffering) {
-			_backbuffer.g2.begin(true, currentState.bgColor);
 			renderCall(_backbuffer);
-			_backbuffer.g2.end();
 			framebuffer.g2.begin();
 			// render backbuffer
 			Scaler.scale(_backbuffer, framebuffer, System.screenRotation);
 			framebuffer.g2.end();
 		} else {
-			framebuffer.g2.begin(true, currentState.bgColor);
 			renderCall(framebuffer);
-			framebuffer.g2.end();
 		}
 	}
 
