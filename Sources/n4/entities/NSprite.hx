@@ -10,6 +10,7 @@ import n4.pooling.NGraphicPool;
 class NSprite extends NEntity {
 
 	public var graphic(default, set):NGraphic;
+	private var graphicRenderer:Canvas->Void;
 	public var color(default, default):Color = Color.White;
 
 	public function new(?X:Float = 0, ?Y:Float = 0, ?Graphic:NGraphic) {
@@ -21,27 +22,22 @@ class NSprite extends NEntity {
 		var ctx = f.g2;
 		ctx.color = color;
 		ctx.pushRotation(angle, x + width / 2, y + height / 2);
-		ctx.drawImage(graphic, x, y);
+		if (graphic != null) {
+			ctx.drawImage(graphic, x, y);
+		} else if (graphicRenderer != null) {
+			graphicRenderer(f);
+		}
 		ctx.popTransformation();
 		super.render(f);
 	}
 
-	public function makeGraphic(Width:Int, Height:Int, ?GraphicColor:Color):NSprite {
-		var g = NGraphicPool.getM(Width, Height, GraphicColor);
-		width = Width;
-		height = Height;
-		if (g == null) {
-			GraphicColor = (GraphicColor == null) ? Color.White : GraphicColor;
-			graphic = Image.createRenderTarget(Width, Height);
-			graphic.g2.begin();
-			graphic.g2.color = GraphicColor;
-			graphic.g2.fillRect(0, 0, Width, Height);
-			graphic.g2.end();
-			NGraphicPool.putM(Width, Height, GraphicColor, graphic);
-		} else {
-			graphic = g;
-		}
-		return this;
+	public function makeGraphic(Width:Int, Height:Int, ?GraphicColor:Color) {
+		graphicRenderer = function (f) {
+			// f.g2.begin(false);
+			f.g2.color = GraphicColor;
+			f.g2.fillRect(x, y, Width, Height);
+			// f.g2.end();
+		};
 	}
 
 	public function renderGraphic(Width:Int, Height:Int, render:NGraphic->Void, ?Key:String = null):NSprite {
