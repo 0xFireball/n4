@@ -3,9 +3,11 @@ package n4.entities;
 import kha.Canvas;
 import kha.Color;
 import kha.Image;
+import kha.Assets;
 import kha.math.FastMatrix3;
 import n4.assets.NGraphic;
 import n4.pooling.NGraphicPool;
+import n4.system.NGraphicAsset;
 
 class NSprite extends NEntity {
 
@@ -58,6 +60,17 @@ class NSprite extends NEntity {
 		}
 		return this;
 	}
+
+	public function loadGraphic(asset:NGraphicAsset) {
+		kha.Assets.loadImageFromPath(asset, true, function (i) {
+			graphic = i;
+			width = i.width;
+			height = i.height;
+			graphicLoaded();
+		});
+	}
+
+	private function graphicLoaded() {}
 
 	private function set_graphic(Value:NGraphic):NGraphic
 	{
