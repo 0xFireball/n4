@@ -38,6 +38,8 @@ class NSprite extends NEntity {
 			f.g2.fillRect(x, y, Width, Height);
 			f.g2.end();
 		};
+		width = Width;
+		height = Height;
 	}
 
 	public function renderGraphic(Width:Int, Height:Int, render:NGraphic->Void, ?Key:String = null):NSprite {
