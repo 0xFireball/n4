@@ -33,6 +33,7 @@ class NGame {
 	// render options
 	public static var useDoubleBuffering:Bool = true;
 	public static var syncDrawUpdate:Bool = true;
+	public static var stabilizeUpdateInterval:Bool = false;
 
 	// input and utilities
 	public static var keys:NKeyboard;
@@ -79,8 +80,11 @@ class NGame {
 	private static function ge_update():Void {
 		++updateFrameCount;
 		_clock.update();
-		// for frame stability, use half the framerate as a minimum
-		var gdt = Math.min(_clock.dt, 2 / targetFramerate);
+		var gdt = _clock.dt;
+		if (stabilizeUpdateInterval) {
+			// for frame stability, use half the framerate as a minimum
+			gdt = Math.min(gdt, 2 / targetFramerate);
+		}
 		// #if debug
 		// trace("current framerate: " + 1 / gdt);
 		// #end
