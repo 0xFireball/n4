@@ -36,7 +36,6 @@ class NSprite extends NEntity {
 	public function makeGraphic(Width:Int, Height:Int, ?GraphicColor:Color) {
 		graphicRenderer = function (f) {
 			f.g2.begin(false);
-			f.g2.color = color;
 			f.g2.fillRect(x, y, Width, Height);
 			f.g2.end();
 		};
