@@ -81,9 +81,12 @@ class NGame {
 			ge_update();
 		}
 		++drawFrameCount;
+		var renderCall:kha.Canvas->Void = function(f) {
+			currentState.render(f);
+		};
 		if (useDoubleBuffering) {
 			_backbuffer.g2.begin(true, currentState.bgColor);
-			currentState.render(_backbuffer);
+			renderCall(_backbuffer);
 			_backbuffer.g2.end();
 			framebuffer.g2.begin();
 			// render backbuffer
@@ -91,7 +94,7 @@ class NGame {
 			framebuffer.g2.end();
 		} else {
 			framebuffer.g2.begin(true, currentState.bgColor);
-			currentState.render(framebuffer);
+			renderCall(framebuffer);
 			framebuffer.g2.end();
 		}
 	}
