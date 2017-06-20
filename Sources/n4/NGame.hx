@@ -80,7 +80,7 @@ class NGame {
 		}
 		++drawFrameCount;
 		var renderCall:kha.Canvas->Void = function(f) {
-			currentState.render(f);
+			NG.camera.render(f, currentState);
 		};
 		if (useDoubleBuffering) {
 			_backbuffer.g2.begin(true, currentState.bgColor);
@@ -113,6 +113,10 @@ class NGame {
 		switchState(currentState);
 		// start loading assets
 		Assets.loadEverything(onAssetsLoaded);
+		// set up rendering system
+		NG.cameras.push(new NCamera(
+			0, 0, width, height, 1.0
+		));
 		System.notifyOnRender(ge_render);
 		if (!syncDrawUpdate) {
 			Scheduler.addTimeTask(ge_update, 0, 1 / targetFramerate);

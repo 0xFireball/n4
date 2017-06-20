@@ -2,7 +2,9 @@ package n4;
 
 import kha.Canvas;
 
-class NCamera extends NBasic {
+import n4.group.NGroup;
+
+class NCamera {
 
 	public static var defaultZoom:Float = 1;
 
@@ -18,7 +20,6 @@ class NCamera extends NBasic {
 	public var angle:Float = 0;
 	
 	public function new (X:Int = 0, Y:Int = 0, Width:Int = 0, Height:Int = 0, Zoom:Float = 0) {
-		super();
 
 		x = X;
 		y = Y;
@@ -31,12 +32,17 @@ class NCamera extends NBasic {
 		initialZoom = zoom;
 	}
 
-	public override function render(f:Canvas) {
-		super.render(f);
-
+	public function render(f:Canvas, drawRoot:NGroup) {
 		f.g2.begin(false);
+
+		// push transformations
+
 		f.g2.pushTranslation(x, y);
 		f.g2.pushRotation(angle, NGame.width / 2, NGame.height / 2);
+
+		// render draw root
+		drawRoot.render(f);
+
 		f.g2.end();
 	}
 
