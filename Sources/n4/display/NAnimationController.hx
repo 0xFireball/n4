@@ -27,6 +27,7 @@ class NAnimationController {
 	public function stop() {
 		playing = false;
 		current = null;
+		frameElapsed = 0;
 	}
 
 	public function update(dt:Float) {
@@ -42,8 +43,8 @@ class NAnimationController {
 					current = null;
 				} else {
 					frameIndex++;
-					frameElapsed = 0;
 				}
+				frameElapsed = 0;
 			}
 		}
 	}
