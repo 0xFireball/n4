@@ -75,6 +75,11 @@ class NSprite extends NEntity {
 		} else if (graphicRenderer != null) {
 			graphicRenderer(f);
 		}
+		#if COLLISION_DEBUG
+		// draw debug collision shapes
+		ctx.color = Color.Red;
+		ctx.drawRect(x + offset.x, y + offset.y, width, height);
+		#end
 		ctx.popTransformation(); // rotation
 		ctx.popTransformation(); // scaling
 		super.render(f);
@@ -119,13 +124,24 @@ class NSprite extends NEntity {
 
 	public function loadGraphic(asset:NGraphicAsset, Animated:Bool = false, ?Width:Int = 0, ?Height:Int = 0) {
 		animated = Animated;
+		if (Width != 0 && Height != 0) {
+			width = Width;
+			height = Height;
+		}
 		kha.Assets.loadImageFromPath(asset, true, function (i) {
 			graphic = i;
-			width = Width == 0 ? i.width : Width;
-			height = Height == 0 ? i.height : Height;
+			if (width == 0 || height == 0) {
+				// set new width and height if not yet set
+				if (Width == 0) {
+					width = Width = i.width;
+				}
+				if (Height == 0) {
+					height = Height = i.height;
+				}
+			}
 			if (animated) {
-				horizFrames = Std.int(i.width / width);
-				vertFrames = Std.int(i.height / height);
+				horizFrames = Std.int(i.width / Width);
+				vertFrames = Std.int(i.height / Height);
 				frameWidth = Std.int(i.width / horizFrames);
 				frameHeight = Std.int(i.height / vertFrames);
 			}
