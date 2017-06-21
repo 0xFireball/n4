@@ -8,12 +8,14 @@ import kha.math.FastMatrix3;
 import n4.assets.NGraphic;
 import n4.pooling.NGraphicPool;
 import n4.system.NGraphicAsset;
+import n4.math.NPoint;
 
 class NSprite extends NEntity {
 
 	public var graphic(default, set):NGraphic;
 	private var graphicRenderer:Canvas->Void;
 	public var color:Color = Color.White;
+	public var scale(default, null):NPoint = new NPoint(1.0, 1.0);
 
 	public function new(?X:Float = 0, ?Y:Float = 0, ?Graphic:NGraphic) {
 		super(X, Y);
@@ -23,13 +25,18 @@ class NSprite extends NEntity {
 	override public function render(f:Canvas) {
 		var ctx = f.g2;
 		ctx.color = color;
-		ctx.pushRotation(angle, x + width / 2, y + height / 2);
+
+		f.g2.pushTransformation(f.g2.transformation.multmat( // scale
+			FastMatrix3.scale(scale.x, scale.y)
+		));
+		ctx.pushRotation(angle, x + width / 2, y + height / 2); // rotate sprite
 		if (graphic != null) {
 			ctx.drawImage(graphic, x, y);
 		} else if (graphicRenderer != null) {
 			graphicRenderer(f);
 		}
-		ctx.popTransformation();
+		ctx.popTransformation(); // rotation
+		ctx.popTransformation(); // scaling
 		super.render(f);
 	}
 
