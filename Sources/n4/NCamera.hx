@@ -36,12 +36,15 @@ class NCamera {
 		f.g2.begin(false);
 
 		// push transformations
-
 		f.g2.pushTranslation(x, y);
 		f.g2.pushRotation(angle, NGame.width / 2, NGame.height / 2);
 
 		// render draw root
 		drawRoot.render(f);
+
+		// pop transformations
+		f.g2.popTransformation(); // translation
+		f.g2.popTransformation(); // rotation
 
 		f.g2.end();
 	}
