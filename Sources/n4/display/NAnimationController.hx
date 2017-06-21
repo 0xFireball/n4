@@ -2,7 +2,7 @@ package n4.display;
 
 class NAnimationController {
 
-	public var frameIndex:Int = 0;
+	public var frameIndex(default, set):Int = 0;
 	public var current:NAnimation;
 	private var animations:Map<String, NAnimation> = new Map<String, NAnimation>();
 	private var playing:Bool = false;
@@ -47,6 +47,10 @@ class NAnimationController {
 				frameElapsed = 0;
 			}
 		}
+	}
+
+	private inline function set_frameIndex(Frame:Int):Int {
+		return frameIndex = Frame;
 	}
 }
 

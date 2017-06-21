@@ -611,6 +611,30 @@ class NEntity extends NBasic {
 		}
 	}
 
+	/**
+	 * Check and see if this object is currently on screen.
+	 * 
+	 * @param	Camera		Specify which game camera you want.  If null getScreenPosition() will just grab the first global camera.
+	 * @return	Whether the object is on screen or not.
+	 */
+	public function isOnScreen(?Camera:NCamera):Bool {
+		if (Camera == null)
+		{
+			Camera = NG.camera;
+		}
+		var screenPos = getScreenPosition(Camera);
+		return (screenPos.x + width > 0) && (screenPos.x < Camera.width) && (screenPos.y + height > 0) && (screenPos.y < Camera.height);
+	}
+
+	public function getScreenPosition(?Camera:NCamera):NPoint {
+		if (Camera == null) {
+			Camera = NG.camera;
+		}
+		// TODO: Implement scrollFactor
+		// return new NPoint(x - Camera.scroll.x * scrollFactor.x, y - Camera.scroll.y * scrollFactor.y);
+		return new NPoint(x - Camera.scroll.x, y - Camera.scroll.y);
+	}
+
 	public function setSize(Width:Float, Height:Float) {
 		width = Width;
 		height = Height;

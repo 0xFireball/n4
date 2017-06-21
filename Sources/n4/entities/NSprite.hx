@@ -6,9 +6,10 @@ import kha.Image;
 import kha.Assets;
 import kha.math.FastMatrix3;
 import n4.assets.NGraphic;
+import n4.assets.NGraphicAsset;
 import n4.pooling.NGraphicPool;
-import n4.system.NGraphicAsset;
 import n4.math.NPoint;
+import n4.math.NMath;
 import n4.display.NAnimationController;
 
 class NSprite extends NEntity {
@@ -168,6 +169,72 @@ class NSprite extends NEntity {
 		{
 			scale.y = newScaleX;
 		}
+	}
+
+	/**
+	 * Check and see if this object is currently on screen. Differs from NObject's implementation
+	 * in that it takes the actual graphic into account, not just the hitbox or bounding box or whatever.
+	 * 
+	 * @param	Camera		Specify which game camera you want.  If null getScreenPosition() will just grab the first global camera.
+	 * @return	Whether the object is on screen or not.
+	 */
+	public override function isOnScreen(?Camera:NCamera):Bool {
+		if (Camera == null)
+			Camera = NG.camera;
+		
+		var minX:Float = x - offset.x - Camera.scroll.x * scrollFactor.x;
+		var minY:Float = y - offset.y - Camera.scroll.y * scrollFactor.y;
+		
+		if ((angle == 0) && (scale.x == 1) && (scale.y == 1))
+		{
+			if (minX > Camera.width || minX + frameWidth < 0)
+				return false;
+			
+			if (minY > Camera.height || minY + frameHeight < 0)
+				return false;
+		}
+		else
+		{
+			var radiusX:Float = frameWidth / 2;
+			var radiusY:Float = frameHeight / 2;
+			
+			var ox:Float = origin.x;
+			if (ox != radiusX)
+			{
+				var x1:Float = Math.abs(ox);
+				var x2:Float = Math.abs(frameWidth - ox);
+				radiusX = Math.max(x2, x1);
+			}
+			
+			var oy:Float = origin.y;
+			if (oy != radiusY)
+			{
+				var y1:Float = Math.abs(oy);
+				var y2:Float = Math.abs(frameHeight - oy);
+				radiusY = Math.max(y2, y1);
+			}
+			
+			radiusX *= Math.abs(scale.x);
+			radiusY *= Math.abs(scale.y);
+			var radius:Float = Math.max(radiusX, radiusY);
+			radius *= NMath.SQUARE_ROOT_OF_TWO;
+			
+			minX += ox;
+			var maxX:Float = minX + radius;
+			minX -= radius;
+			
+			if (maxX < 0 || minX > Camera.width)
+				return false;
+			
+			minY += oy;
+			var maxY:Float = minY + radius;
+			minY -= radius;
+			
+			if (maxY < 0 || minY > Camera.height)
+				return false;
+		}
+		
+		return true;
 	}
 
 	/**

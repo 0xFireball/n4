@@ -1,3 +1,3 @@
-package n4.system;
+package n4.assets;
 
 typedef NGraphicAsset = String
