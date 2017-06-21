@@ -1,37 +1,33 @@
 package n4.input.keyboard;
 
 import kha.input.Keyboard;
-import kha.Key;
+import kha.input.KeyCode;
 
 class NKeyboard {
-	private var state(default, never):Map<String, NKeyState> = new Map<String, NKeyState>();
+	private var state(default, never):Map<Int, NKeyState> = new Map<Int, NKeyState>();
 	public var list(default, never):Array<NKeyState> = new Array<NKeyState>();
 
 	public function new() {
 		Keyboard.get().notify(onKeyDown, onKeyUp);
 	}
 
-	private inline function fillPosition(c:String) {
-		state[c] = new NKeyState();
+	private inline function fillPosition(k:Int) {
+		state[k] = new NKeyState();
 	}
 
-	private function onKeyDown(k:Key, c:String) {
-		if (c == "") c = k.getName().toUpperCase();
-		else c = c.toUpperCase();
-		if (state[c] == null) state[c] = new NKeyState();
-		list.push(state[c]);
-		state[c].press();
+	private function onKeyDown(k:Int) {
+		if (state[k] == null) fillPosition(k);
+		list.push(state[k]);
+		state[k].press();
 	}
 
-	private function onKeyUp(k:Key, c:String) {
-		if (c == "") c = k.getName().toUpperCase();
-		else c = c.toUpperCase();
-		if (state[c] == null) state[c] = new NKeyState();
-		state[c].release();
-		list.remove(state[c]);
+	private function onKeyUp(k:Int) {
+		if (state[k] == null) fillPosition(k);
+		state[k].release();
+		list.remove(state[k]);
 	}
 
-	public function pressed(keys:Array<String>):Bool {
+	public function pressed(keys:Array<Int>):Bool {
 		for (key in keys) {
 			if (state[key] == null) state[key] = new NKeyState();
 			var ks = state[key];
@@ -40,7 +36,7 @@ class NKeyboard {
 		return false;
 	}
 
-	public function justPressed(keys:Array<String>):Bool {
+	public function justPressed(keys:Array<Int>):Bool {
 		for (key in keys) {
 			if (state[key] == null) state[key] = new NKeyState();
 			var ks = state[key];

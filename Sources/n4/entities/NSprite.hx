@@ -25,12 +25,12 @@ class NSprite extends NEntity {
 	 * WARNING: The origin of the sprite will default to its center. If you change this, 
 	 * the visuals and the collisions will likely be pretty out-of-sync if you do any rotation.
 	 */
-	public var origin(default, null):NPoint;
+	public var origin(default, null):NPoint = new NPoint(0, 0);
 	/**
 	 * Controls the position of the sprite's hitbox. Likely needs to be adjusted after
 	 * changing a sprite's width, height or scale.
 	 */
-	public var offset(default, null):NPoint;
+	public var offset(default, null):NPoint = new NPoint(0, 0);
 
 	/**
 	 * The width of the actual graphic or image being displayed (not necessarily the game object/bounding box).
@@ -60,8 +60,8 @@ class NSprite extends NEntity {
 		if (graphic != null) {
 			if (animated) {
 				// draw frame
-				var frameX = animation.frameIndex * frameWidth % horizFrames;
-				var frameY = animation.frameIndex * frameWidth / horizFrames;
+				var frameX = (animation.frameIndex % horizFrames) * frameWidth;
+				var frameY = Std.int(animation.frameIndex / horizFrames);
 				ctx.drawSubImage(
 					graphic,
 					x, y,
@@ -84,7 +84,10 @@ class NSprite extends NEntity {
 		super.update(dt);
 
 		animation.update(dt);
+		animate();
 	}
+
+	private function animate() { }
 
 	public function makeGraphic(Width:Int, Height:Int, ?GraphicColor:Color) {
 		graphicRenderer = function (f) {

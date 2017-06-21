@@ -24,6 +24,11 @@ class NAnimationController {
 		}
 	}
 
+	public function stop() {
+		playing = false;
+		current = null;
+	}
+
 	public function update(dt:Float) {
 		if (playing) {
 			var frameTime = 1.0 / current.framerate;
@@ -34,8 +39,10 @@ class NAnimationController {
 				if (frameIndex >= current.seq.length - 1) {
 					// last frame, end animation
 					playing = false;
+					current = null;
 				} else {
 					frameIndex++;
+					frameElapsed = 0;
 				}
 			}
 		}
