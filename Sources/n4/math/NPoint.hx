@@ -1,6 +1,7 @@
 package n4.math;
 
 import kha.math.FastVector2;
+import kha.math.FastMatrix3;
 
 /**
  * Stores a 2D floating point coordinate.
@@ -282,13 +283,12 @@ class NPoint
 	 * @param	matrix	tranformation matrix
 	 * @return	transformed point
 	 */
-	// public inline function transform(matrix:Matrix):NPoint
-	// {
-	// 	var x1:Float = x * matrix.a + y * matrix.c + matrix.tx;
-	// 	var y1:Float = x * matrix.b + y * matrix.d + matrix.ty;
+	public inline function transform(matrix:FastMatrix3):NPoint
+	{
+		var tvec = matrix.multvec(toFastVector2());
 		
-	// 	return set(x1, y1);
-	// }
+		return set(tvec.x, tvec.y);
+	}
 	
 	/**
 	 * Necessary for NCallbackPoint.

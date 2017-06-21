@@ -23,7 +23,7 @@ class NCamera {
 	public var width:Float = 0;
 	public var height:Float = 0;
 
-	public var zoom:Float = 0;
+	public var zoom(default, set):Float = 0;
 	public var initialZoom(default, null):Float = 0;
 
 	public var angle:Float = 0;
@@ -71,6 +71,9 @@ class NCamera {
 	 */
 	private var _lastTargetPosition:NPoint;
 
+	private var scaleX:Float;
+	private var scaleY:Float;
+
 	private var style(default, null):NCameraFollowStyle;
 	
 	public function new (X:Int = 0, Y:Int = 0, Width:Int = 0, Height:Int = 0, Zoom:Float = 0) {
@@ -84,6 +87,7 @@ class NCamera {
 
 		zoom = Zoom == 0 ? defaultZoom : Zoom;
 		initialZoom = zoom;
+		setScale(zoom, zoom);
 	}
 
 	public function reset() {
@@ -107,9 +111,7 @@ class NCamera {
 		// or doublecheck our deadzone and update accordingly.
 		if (deadzone == null)
 		{
-			var mp = target.getMidpoint();
-			mp.addPoint(targetOffset);
-			focusOn(mp);
+			focusTarget();
 		}
 		else
 		{
@@ -187,6 +189,12 @@ class NCamera {
 		}
 	}
 
+	private function focusTarget() {
+		var mp = target.getMidpoint();
+		mp.addPoint(targetOffset);
+		focusOn(mp);
+	}
+
 	/**
 	 * Updates (bounds) the camera scroll.
 	 * Called every frame by camera's update() method.
@@ -206,7 +214,10 @@ class NCamera {
 	}
 	
 	public inline function focusOn(p:NPoint) {
-		scroll.set(p.x - width / 2, p.y - height / 2);
+		scroll.set(
+			p.x - (width / 2),
+			p.y - (height / 2)
+		);
 	}
 
 	public function render(f:Canvas, drawRoot:NGroup) {
@@ -214,9 +225,14 @@ class NCamera {
 
 		// push transformations
 		f.g2.pushTransformation(f.g2.transformation.multmat( // camera zoom
-			FastMatrix3.scale(zoom, zoom)
+			FastMatrix3.scale(scaleX, scaleY)
 		));
-		f.g2.pushTranslation(-scroll.x, -scroll.y); // scroll translation
+		var scaleOffsetX = (scaleX - initialZoom) * width / 2;
+		var scaleOffsetY = (scaleY - initialZoom) * height / 2;
+		f.g2.pushTranslation( // scroll translation
+			-scroll.x * scaleX - scaleOffsetX,
+			-scroll.y * scaleY - scaleOffsetY
+		);
 		f.g2.pushRotation(angle, NGame.width / 2, NGame.height / 2); // camera rotation
 
 		// render draw root
@@ -267,7 +283,12 @@ class NCamera {
 		updateScroll();
 	}
 
-	public function follow(Target:NEntity, ?Style:NCameraFollowStyle, ?Lerp:Float) {
+	private function setScale(X:Float, Y:Float) {
+		scaleX = X;
+		scaleY = Y;
+	}
+
+	public function follow(Target:NEntity, ?Style:NCameraFollowStyle, ?Lerp:Float, ?Focus:Bool = false) {
 		if (Style == null) {
 			Style = NCameraFollowStyle.LOCKON;
 		}
@@ -313,8 +334,17 @@ class NCamera {
 			case NO_DEAD_ZONE:
 				deadzone = null;
 		}
+
+		if (Focus) {
+			focusTarget();
+		}
 	}
 
+	private function set_zoom(Zoom:Float):Float {
+		zoom = Zoom;
+		setScale(zoom, zoom);
+		return zoom;
+	}
 }
 
 enum NCameraFollowStyle {
