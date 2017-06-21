@@ -9,6 +9,7 @@ import n4.assets.NGraphic;
 import n4.pooling.NGraphicPool;
 import n4.system.NGraphicAsset;
 import n4.math.NPoint;
+import n4.display.NAnimationController;
 
 class NSprite extends NEntity {
 
@@ -17,16 +18,31 @@ class NSprite extends NEntity {
 	public var color:Color = Color.White;
 	public var scale(default, null):NPoint = new NPoint(1.0, 1.0);
 
+	public var animation:NAnimationController = new NAnimationController();
+	public var animated:Bool = false;
+
 	/**
 	 * WARNING: The origin of the sprite will default to its center. If you change this, 
 	 * the visuals and the collisions will likely be pretty out-of-sync if you do any rotation.
 	 */
-	public var origin(default, null):FlxPoint;
+	public var origin(default, null):NPoint;
 	/**
 	 * Controls the position of the sprite's hitbox. Likely needs to be adjusted after
 	 * changing a sprite's width, height or scale.
 	 */
-	public var offset(default, null):FlxPoint;
+	public var offset(default, null):NPoint;
+
+	/**
+	 * The width of the actual graphic or image being displayed (not necessarily the game object/bounding box).
+	 */
+	public var frameWidth(default, null):Int = 0;
+	/**
+	 * The height of the actual graphic or image being displayed (not necessarily the game object/bounding box).
+	 */
+	public var frameHeight(default, null):Int = 0;
+
+	public var horizFrames(default, null):Int = 1;
+	public var vertFrames(default, null):Int = 1;
 
 	public function new(?X:Float = 0, ?Y:Float = 0, ?Graphic:NGraphic) {
 		super(X, Y);
@@ -42,13 +58,32 @@ class NSprite extends NEntity {
 		));
 		ctx.pushRotation(angle, x + width / 2, y + height / 2); // rotate sprite
 		if (graphic != null) {
-			ctx.drawImage(graphic, x, y);
+			if (animated) {
+				// draw frame
+				var frameX = animation.frameIndex * frameWidth % horizFrames;
+				var frameY = animation.frameIndex * frameWidth / horizFrames;
+				ctx.drawSubImage(
+					graphic,
+					x, y,
+					frameX, frameY,
+					frameWidth, frameHeight
+				);
+			} else {
+				// draw static image
+				ctx.drawImage(graphic, x, y);
+			}
 		} else if (graphicRenderer != null) {
 			graphicRenderer(f);
 		}
 		ctx.popTransformation(); // rotation
 		ctx.popTransformation(); // scaling
 		super.render(f);
+	}
+
+	override public function update(dt:Float) {
+		super.update(dt);
+
+		animation.update(dt);
 	}
 
 	public function makeGraphic(Width:Int, Height:Int, ?GraphicColor:Color) {
@@ -79,11 +114,18 @@ class NSprite extends NEntity {
 		return this;
 	}
 
-	public function loadGraphic(asset:NGraphicAsset) {
+	public function loadGraphic(asset:NGraphicAsset, Animated:Bool = false, ?Width:Int = 0, ?Height:Int = 0) {
+		animated = Animated;
 		kha.Assets.loadImageFromPath(asset, true, function (i) {
 			graphic = i;
-			width = i.width;
-			height = i.height;
+			width = Width == 0 ? i.width : Width;
+			height = Height == 0 ? i.height : Height;
+			if (animated) {
+				horizFrames = Std.int(i.width / width);
+				vertFrames = Std.int(i.height / height);
+				frameWidth = Std.int(i.width / horizFrames);
+				frameHeight = Std.int(i.height / vertFrames);
+			}
 			graphicLoaded();
 		});
 	}
