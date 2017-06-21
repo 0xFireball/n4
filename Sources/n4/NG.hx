@@ -14,6 +14,8 @@ class NG {
 	 */
 	public static var worldBounds(default, null):NRect = new NRect();
 
+	public static var initialZoom(default, null):Float = 1.0;
+
 	/**
 	 * How many times the quad tree should divide the world on each axis. Generally, sparse collisions can have fewer divisons,
 	 * while denser collision activity usually profits from more. Default value is 6.

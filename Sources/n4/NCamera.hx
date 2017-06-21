@@ -5,6 +5,7 @@ import kha.Canvas;
 import n4.NGame;
 import n4.group.NGroup;
 import n4.math.NPoint;
+import n4.math.NMath;
 import n4.math.NRect;
 import n4.entities.NSprite;
 
@@ -28,6 +29,23 @@ class NCamera {
 
 	public var target(default, null):NEntity;
 	public var deadzone(default, null):NRect;
+
+	/**
+	 * Lower bound of the cameras scroll on the x axis
+	 */
+	public var minScrollX:Null<Float>;
+	/**
+	 * Upper bound of the cameras scroll on the x axis
+	 */
+	public var maxScrollX:Null<Float>;
+	/**
+	 * Lower bound of the cameras scroll on the y axis
+	 */
+	public var minScrollY:Null<Float>;
+	/**
+	 * Upper bound of the cameras scroll on the y axis
+	 */
+	public var maxScrollY:Null<Float>;
 
 	public var followLerp(default, null):Float = NGame.defaultTargetFramerate / NGame.targetFramerate;
 
@@ -72,6 +90,8 @@ class NCamera {
 		if (target != null) {
 			updateFollow();
 		}
+
+		updateScroll();
 	}
 
 	// Based on HaxeFlixel implementation
@@ -160,6 +180,24 @@ class NCamera {
 			}
 		}
 	}
+
+	/**
+	 * Updates (bounds) the camera scroll.
+	 * Called every frame by camera's update() method.
+	 */
+	private function updateScroll():Void
+	{
+		// Adjust bounds to account for zoom
+		var zoom = this.zoom / NG.initialZoom;
+		var minX:Null<Float> = minScrollX == null ? null : minScrollX - (zoom - 1) * width / (2 * zoom);
+		var maxX:Null<Float> = maxScrollX == null ? null : maxScrollX + (zoom - 1) * width / (2 * zoom);
+		var minY:Null<Float> = minScrollY == null ? null : minScrollY - (zoom - 1) * height / (2 * zoom);
+		var maxY:Null<Float> = maxScrollY == null ? null : maxScrollY + (zoom - 1) * height / (2 * zoom);
+		
+		// Make sure we didn't go outside the camera's bounds
+		scroll.x = NMath.bound(scroll.x, minX, (maxX != null) ? maxX - width : null);
+		scroll.y = NMath.bound(scroll.y, minY, (maxY != null) ? maxY - height : null);
+	}
 	
 	public inline function focusOn(p:NPoint) {
 		scroll.set(p.x - width / 2, p.y - height / 2);
@@ -180,6 +218,43 @@ class NCamera {
 		f.g2.popTransformation(); // rotation
 
 		f.g2.end();
+	}
+
+	/**
+	 * Specify the bounding rectangle of where the camera is allowed to move.
+	 * 
+	 * @param	X				The smallest X value of your level (usually 0).
+	 * @param	Y				The smallest Y value of your level (usually 0).
+	 * @param	Width			The largest X value of your level (usually the level width).
+	 * @param	Height			The largest Y value of your level (usually the level height).
+	 * @param	UpdateWorld		Whether the global quad-tree's dimensions should be updated to match (default: false).
+	 */
+	public function setScrollBoundsRect(X:Float = 0, Y:Float = 0, Width:Float = 0, Height:Float = 0, UpdateWorld:Bool = false):Void
+	{
+		if (UpdateWorld)
+		{
+			NG.worldBounds.set(X, Y, Width, Height);
+		}
+		
+		setScrollBounds(X, X + Width, Y, Y + Height);
+	}
+
+	/**
+	 * Specify the bounds of where the camera is allowed to move.
+	 * Set the boundary of a side to null to leave that side unbounded.
+	 * 
+	 * @param	MinX	The minimum X value the camera can scroll to
+	 * @param	MaxX	The maximum X value the camera can scroll to
+	 * @param	MinY	The minimum Y value the camera can scroll to
+	 * @param	MaxY	The maximum Y value the camera can scroll to
+	 */
+	private function setScrollBounds(MinX:Null<Float>, MaxX:Null<Float>, MinY:Null<Float>, MaxY:Null<Float>):Void
+	{
+		minScrollX = MinX;
+		maxScrollX = MaxX;
+		minScrollY = MinY;
+		maxScrollY = MaxY;
+		updateScroll();
 	}
 
 	public function follow(Target:NEntity, ?Style:NCameraFollowStyle, ?Lerp:Float) {
