@@ -64,13 +64,13 @@ class NSprite extends NEntity {
 				var frameY = Std.int(animation.frameIndex / horizFrames);
 				ctx.drawSubImage(
 					graphic,
-					x, y,
+					x - offset.x, y - offset.y,
 					frameX, frameY,
 					frameWidth, frameHeight
 				);
 			} else {
 				// draw static image
-				ctx.drawImage(graphic, x, y);
+				ctx.drawImage(graphic, x - offset.x, y - offset.y);
 			}
 		} else if (graphicRenderer != null) {
 			graphicRenderer(f);
@@ -78,7 +78,7 @@ class NSprite extends NEntity {
 		#if COLLISION_DEBUG
 		// draw debug collision shapes
 		ctx.color = Color.Red;
-		ctx.drawRect(x + offset.x, y + offset.y, width, height);
+		ctx.drawRect(x, y, width, height);
 		#end
 		ctx.popTransformation(); // rotation
 		ctx.popTransformation(); // scaling
@@ -97,7 +97,7 @@ class NSprite extends NEntity {
 	public function makeGraphic(Width:Int, Height:Int, ?GraphicColor:Color) {
 		graphicRenderer = function (f) {
 			f.g2.begin(false);
-			f.g2.fillRect(x, y, Width, Height);
+			f.g2.fillRect(x - offset.x, y - offset.y, Width, Height);
 			f.g2.end();
 		};
 		color = GraphicColor;
