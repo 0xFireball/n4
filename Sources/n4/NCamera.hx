@@ -85,6 +85,11 @@ class NCamera {
 		initialZoom = zoom;
 	}
 
+	public function reset() {
+		zoom = initialZoom;
+		target = null;
+	}
+
 	public function update(dt:Float) {
 		// follow target
 		if (target != null) {
@@ -207,15 +212,21 @@ class NCamera {
 		f.g2.begin(false);
 
 		// push transformations
-		f.g2.pushTranslation(-scroll.x, -scroll.y);
-		f.g2.pushRotation(angle, NGame.width / 2, NGame.height / 2);
+		f.g2.pushTransformation(new kha.math.FastMatrix3( // camera zoom
+			zoom, 0, 0,
+			0, zoom, 0,
+			0, 0, 1
+		));
+		f.g2.pushTranslation(-scroll.x, -scroll.y); // scroll translation
+		f.g2.pushRotation(angle, NGame.width / 2, NGame.height / 2); // camera rotation
 
 		// render draw root
 		drawRoot.render(f);
 
 		// pop transformations
-		f.g2.popTransformation(); // translation
 		f.g2.popTransformation(); // rotation
+		f.g2.popTransformation(); // translation
+		f.g2.popTransformation(); // zoom
 
 		f.g2.end();
 	}
