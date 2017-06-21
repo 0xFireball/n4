@@ -611,6 +611,10 @@ class NEntity extends NBasic {
 		}
 	}
 
+	public inline function getMidpoint() {
+		return new NPoint(x + width / 2, y + height / 2);
+	}
+
 	private function set_x(Value:Float):Float {
 		return x = Value;
 	}

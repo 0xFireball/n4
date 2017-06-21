@@ -16,7 +16,7 @@ class NGame {
 	private static var _backbuffer:Image;
 	private static var _initialState:Class<NState>;
 	private static var _clock:NClock;
-	
+
 	// configuration
 	public static var width(default, null):Int;
 	public static var height(default, null):Int;
@@ -44,7 +44,7 @@ class NGame {
 		if (Width == 0 && Height == 0) {
 			Width =
 				untyped __js__('window.innerWidth');
-			Height = 
+			Height =
 				untyped __js__('window.innerHeight');
 		}
 		#end
@@ -74,7 +74,10 @@ class NGame {
 		// trace("current framerate: " + 1 / gdt);
 		// #end
  		timers.update(gdt);
+		// update state
 		currentState.update(gdt);
+		// update rendering cameras
+		NG.cameras.update(gdt);
 	}
 
 	private static function ge_render(framebuffer: Framebuffer): Void {

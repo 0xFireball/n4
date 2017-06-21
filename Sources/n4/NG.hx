@@ -27,7 +27,7 @@ class NG {
 	public static var touches:NTouchSurface;
 
 	// camera
-	public static var cameras:NCameraGroup = [];
+	public static var cameras:NCameraGroup = new NCameraGroup();
 	public static var camera(get, never):NCamera;
 	
 	// collision detection
@@ -88,6 +88,6 @@ class NG {
 	}
 
 	private static function get_camera():NCamera {
-		return cameras[0];
+		return cameras.get(0);
 	}
 }
