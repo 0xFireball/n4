@@ -127,6 +127,9 @@ class NSprite extends NEntity {
 		if (Width != 0 && Height != 0) {
 			width = Width;
 			height = Height;
+			// set temporary frame dimensions
+			frameWidth = Std.int(width);
+			frameHeight = Std.int(height);
 		}
 		kha.Assets.loadImageFromPath(asset, true, function (i) {
 			graphic = i;
@@ -147,6 +150,24 @@ class NSprite extends NEntity {
 			}
 			graphicLoaded();
 		});
+	}
+
+	public function setGraphicSize(Width:Int = 0, Height:Int = 0):Void {
+		if (Width <= 0 && Height <= 0)
+			return;
+		
+		var newScaleX:Float = Width / frameWidth;
+		var newScaleY:Float = Height / frameHeight;
+		scale.set(newScaleX, newScaleY);
+		
+		if (Width <= 0)
+		{
+			scale.x = newScaleY;
+		}
+		else if (Height <= 0)
+		{
+			scale.y = newScaleX;
+		}
 	}
 
 	/**
