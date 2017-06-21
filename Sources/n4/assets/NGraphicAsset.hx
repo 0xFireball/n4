@@ -1,3 +1,5 @@
 package n4.assets;
 
-typedef NGraphicAsset = String
+import n4.util.typeLimit.OneOfTwo;
+
+typedef NGraphicAsset = OneOfTwo<String, NGraphic>
