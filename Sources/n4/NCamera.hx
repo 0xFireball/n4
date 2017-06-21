@@ -2,7 +2,9 @@ package n4;
 
 import kha.Canvas;
 
+import n4.NGame;
 import n4.group.NGroup;
+import n4.math.NRect;
 
 class NCamera {
 
@@ -15,9 +17,14 @@ class NCamera {
 	public var height:Float = 0;
 
 	public var zoom:Float = 0;
-	public var initialZoom:Float = 0;
+	public var initialZoom(default, null):Float = 0;
 
 	public var angle:Float = 0;
+
+	public var target(default, null):NEntity;
+	public var deadzone(default, null):NRect;
+
+	private var style(default, null):NCameraFollowStyle;
 	
 	public function new (X:Int = 0, Y:Int = 0, Width:Int = 0, Height:Int = 0, Zoom:Float = 0) {
 
@@ -49,4 +56,59 @@ class NCamera {
 		f.g2.end();
 	}
 
+	public function follow(Target:NEntity, ?Style:NCameraFollowStyle, ?Lerp:Float) {
+		if (Style == null) {
+			Style = NCameraFollowStyle.LOCKON;
+		}
+		if (Lerp == null) {
+			Lerp = NGame.defaultTargetFramerate / NGame.targetFramerate;
+		}
+
+		style = Style;
+		target = Target;
+		
+		var helper:Float;
+		var w:Float = 0;
+		var h:Float = 0;
+
+		switch (Style)
+		{
+			case LOCKON:
+				if (target != null) 
+				{	
+					w = target.width;
+					h = target.height;
+				}
+				deadzone = new NRect((width - w) / 2, (height - h) / 2 - h * 0.25, w, h);
+			
+			case PLATFORMER:
+				var w:Float = (width / 8);
+				var h:Float = (height / 3);
+				deadzone = new NRect((width - w) / 2, (height - h) / 2 - h * 0.25, w, h);
+				
+			case TOPDOWN:
+				helper = Math.max(width, height) / 4;
+				deadzone = new NRect((width - helper) / 2, (height - helper) / 2, helper, helper);
+				
+			case TOPDOWN_TIGHT:
+				helper = Math.max(width, height) / 8;
+				deadzone = new NRect((width - helper) / 2, (height - helper) / 2, helper, helper);
+				
+			case SCREEN_BY_SCREEN:
+				deadzone = new NRect(0, 0, width, height);
+				
+			case NO_DEAD_ZONE:
+				deadzone = null;
+		}
+	}
+
+}
+
+enum NCameraFollowStyle {
+	LOCKON;
+	PLATFORMER;
+	TOPDOWN;
+	TOPDOWN_TIGHT;
+	SCREEN_BY_SCREEN;
+	NO_DEAD_ZONE;
 }

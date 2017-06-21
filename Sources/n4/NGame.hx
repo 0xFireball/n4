@@ -22,6 +22,9 @@ class NGame {
 	public static var height(default, null):Int;
 	public static var targetFramerate:Int;
 
+	// default configuration
+	public static var defaultTargetFramerate:Int = 60;
+
 	// state variables
 	public static var currentState:NState = new NState();
 	public static var drawFrameCount(default, null):Int = 0;
@@ -106,11 +109,6 @@ class NGame {
 
 		// create a drawing backbuffer
     	_backbuffer = Image.createRenderTarget(width, height);
-		// start preloader state
-		currentState = new N4AssetPreloader();
-		switchState(currentState);
-		// start loading assets
-		Assets.loadEverything(onAssetsLoaded);
 		// set up rendering system
 		NG.cameras.push(new NCamera(
 			0, 0, width, height, 1.0
@@ -119,6 +117,11 @@ class NGame {
 		if (!syncDrawUpdate) {
 			Scheduler.addTimeTask(ge_update, 0, 1 / targetFramerate);
 		}
+		// start preloader state
+		currentState = new N4AssetPreloader();
+		switchState(currentState);
+		// start loading assets
+		Assets.loadEverything(onAssetsLoaded);
 	}
 
 	private static function onAssetsLoaded() {
