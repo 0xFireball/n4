@@ -17,6 +17,17 @@ class NSprite extends NEntity {
 	public var color:Color = Color.White;
 	public var scale(default, null):NPoint = new NPoint(1.0, 1.0);
 
+	/**
+	 * WARNING: The origin of the sprite will default to its center. If you change this, 
+	 * the visuals and the collisions will likely be pretty out-of-sync if you do any rotation.
+	 */
+	public var origin(default, null):FlxPoint;
+	/**
+	 * Controls the position of the sprite's hitbox. Likely needs to be adjusted after
+	 * changing a sprite's width, height or scale.
+	 */
+	public var offset(default, null):FlxPoint;
+
 	public function new(?X:Float = 0, ?Y:Float = 0, ?Graphic:NGraphic) {
 		super(X, Y);
 		graphic = Graphic;
@@ -75,6 +86,25 @@ class NSprite extends NEntity {
 			height = i.height;
 			graphicLoaded();
 		});
+	}
+
+	/**
+	 * Sets the sprite's origin to its center - useful after adjusting 
+	 * scale to make sure rotations work as expected.
+	 */
+	public inline function centerOrigin():Void {
+		origin.set(frameWidth * 0.5, frameHeight * 0.5);
+	}
+
+	/**
+	 * Updates the sprite's hitbox (width, height, offset) according to the current scale. 
+	 * Also calls centerOrigin().
+	 */
+	public function updateHitbox():Void {
+		width = Math.abs(scale.x) * frameWidth;
+		height = Math.abs(scale.y) * frameHeight;
+		offset.set(-0.5 * (width - frameWidth), -0.5 * (height - frameHeight));
+		centerOrigin();
 	}
 
 	private function graphicLoaded() {}
